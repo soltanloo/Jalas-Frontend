@@ -242,7 +242,7 @@ const mapDispatchToProps = {
   getPolls: () => fetchPolls(),
   getPoll: (id) => fetchPoll(id),
   getAvailableRooms: (from, to) => fetchAvailableRooms(from, to),
-  createMeeting: (roomId, from, to, title) => createMeeting(),
+  createMeeting: (roomId, from, to) => createMeeting(roomId, from, to),
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(NewMeeting);

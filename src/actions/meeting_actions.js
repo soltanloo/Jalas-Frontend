@@ -3,10 +3,10 @@ import QS from 'querystring';
 import { toast } from 'react-toastify';
 const url = "http://localhost:8080/api";
 
-export function createMeeting(roomId, from, to, title = '') {
+export function createMeeting(roomId, from, to) {
   return dispatch => {
     axios.post(`${url}/meeting`,
-      QS.stringify({ roomId, from, to, title, })
+      QS.stringify({ roomId, from, to })
     )
       .then(res => {
         toast.success('جلسه با موفقیت ثبت شد')
