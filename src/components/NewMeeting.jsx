@@ -10,23 +10,24 @@ import Stepper from '@material-ui/core/Stepper';
 import Step from '@material-ui/core/Step';
 import StepLabel from '@material-ui/core/StepLabel';
 import Button from '@material-ui/core/Button';
-import { toPersianDigits } from './helpers/lang_helper';
-import { fetchPoll, fetchPolls } from "./actions/poll_actions";
-import { fetchAvailableRooms } from "./actions/room_actions";
-import { createMeeting } from "./actions/meeting_actions";
+import { toPersianDigits } from '../helpers/lang_helper';
+import { fetchPoll, fetchPolls } from "../actions/poll_actions";
+import { fetchAvailableRooms } from "../actions/room_actions";
+import { cancelMeeting, createMeeting } from "../actions/meeting_actions";
+import jMoment from 'moment-jalaali';
 
 const initialState = {
-  time: undefined,
-  poll: undefined,
-  room: undefined,
-  activeStep: 0,
+  time: null,
+  poll: null,
+  room: null,
+  activeStep: 0
 };
 
 class NewMeeting extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      ...initialState
+      ...initialState,
     };
   }
 
@@ -44,15 +45,18 @@ class NewMeeting extends Component {
     return ['انتخاب نظرسنجی', 'نهایی‌سازی زمان جلسه', 'انتخاب اتاق جلسه'];
   };
 
-  handleSelectPoll(event) {
+  handleSelectPoll = (event) => {
     this.setState({ poll: event.target.value });
     this.props.getPoll(event.target.value);
   }
 
-  handleSelectTime(event) {
+  handleSelectTime = (event) => {
     this.setState({ time: event.target.value });
-    this.props.getAvailableRooms(new Date(), new Date()); // FIXME
-  }
+    const option = this.props.selectedPoll.options.find(option => {
+      return option.id == event.target.value;
+    });
+    this.props.getAvailableRooms(option.startTime, option.finishTime);
+  };
   
   getStepContent = stepIndex => {
     switch (stepIndex) {
@@ -75,6 +79,7 @@ class NewMeeting extends Component {
                   id: 'outlined-age-native-simple',
                 }}
               >
+                <option value="" />
                 {this.renderPolls()}
               </Select>
             </FormControl>
@@ -99,6 +104,7 @@ class NewMeeting extends Component {
                   id: 'outlined-age-native-simple',
                 }}
               >
+                <option value="" />
                 {this.renderTimes()}
               </Select>
             </FormControl>
@@ -119,10 +125,11 @@ class NewMeeting extends Component {
                 value={this.state.room}
                 onChange={this.handleSelectRoom}
                 inputProps={{
-                  name: 'time',
+                  name: 'room',
                   id: 'outlined-age-native-simple',
                 }}
               >
+                <option value="" />
                 {this.renderRooms()}
               </Select>
             </FormControl>
@@ -133,23 +140,23 @@ class NewMeeting extends Component {
     }
   };
 
-  renderPolls() {
-    this.props.polls.map(poll => {
-      return <option value={poll.id}>{poll.title}</option>;
+  renderPolls = () => {
+    return this.props.polls.map(poll => {
+      return <option key={'poll-' + poll.id} value={poll.id}>{poll.title}</option>;
     })
-  }
+  };
 
-  renderTimes() {
-    this.props.selectedPoll.options.map(op => {
-      return <option value={op.id}>{op.title} - {op.voteCount} رأی</option>;
+  renderTimes = () => {
+    return this.props.selectedPoll.options.map(op => {
+      return <option key={'option-' + op.id} value={op.id}>{jMoment(op.startTime, 'YYYY-MM-DDTHH:mm:ss').format('jYYYY/jM/jD HH:mm')} تا {jMoment(op.finishTime, 'YYYY-MM-DDTHH:mm:ss').format('jYYYY/jM/jD HH:mm')} - {op.userList.length} رأی</option>;
     })
-  }
+  };
 
-  renderRooms() {
-    this.props.availableRooms.map(room => {
-      return <option value={room.id}>{room.title}</option>;
+  renderRooms = () => {
+    return this.props.availableRooms.map(room => {
+      return <option key={'room-' + room} value={room}>{room}</option>;
     })
-  }
+  };
 
   setActiveStep = step => {
     this.setState({ activeStep: step });
@@ -168,13 +175,24 @@ class NewMeeting extends Component {
     this.setActiveStep(0);
   };
 
+  handleSelectRoom = (event) => {
+    this.setState({ room: event.target.value })
+  };
+
   submitMeeting = () => {
-    this.props.createMeeting();
+    const option = this.props.selectedPoll.options.find(option => {
+      return option.id == this.state.time;
+    });
+    this.props.createMeeting(this.state.room, option.startTime, option.finishTime);
+  };
+
+  cancelMeeting = () => {
+    this.props.cancelMeeting(this.props.meeting.id);
   };
 
   canStepForward = () => {
     return (this.state.activeStep === 0 && this.props.selectedPoll !== null) ||
-      (this.state.activeStep === 1 && this.state.time !== undefined);
+      (this.state.activeStep === 1 && this.props.availableRooms !== []) || (this.state.activeStep === 2 && this.state.poll !== null && this.state.time !== null && this.state.room !== null);
   };
 
   render() {
@@ -202,7 +220,7 @@ class NewMeeting extends Component {
               </div>
             ) : (
               <div>
-                <Typography>{this.getStepContent(this.state.activeStep)}</Typography>
+                {this.getStepContent(this.state.activeStep)}
                 <div>
                   <Button
                     disabled={this.state.activeStep === 0}
@@ -224,8 +242,11 @@ class NewMeeting extends Component {
             )}
           </div>
         </div>
-        <Button onClick={this.submitMeeting} variant="contained" color="primary" disabled={false}>
+        <Button onClick={this.submitMeeting} variant="contained" color="primary">
           ایجاد جلسه
+        </Button>
+        <Button onClick={this.cancelMeeting}>
+          لغو جلسه
         </Button>
       </Paper>
     )
@@ -236,6 +257,7 @@ const mapStateToProps = state => ({
   polls: state.polls,
   selectedPoll: state.selectedPoll,
   availableRooms: state.availableRooms,
+  meeting: state.meeting,
 });
 
 const mapDispatchToProps = {
@@ -243,6 +265,7 @@ const mapDispatchToProps = {
   getPoll: (id) => fetchPoll(id),
   getAvailableRooms: (from, to) => fetchAvailableRooms(from, to),
   createMeeting: (roomId, from, to) => createMeeting(roomId, from, to),
+  cancelMeeting: (meetingId) => cancelMeeting(meetingId),
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(NewMeeting);

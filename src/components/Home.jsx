@@ -1,13 +1,12 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import logo from './logo_transparent.png';
+import logo from '../logo_transparent.png';
 import { Button } from '@material-ui/core';
 import { Link } from 'react-router-dom';
 
 
 export default class Home extends Component {
   static propTypes = {
-    prop: PropTypes
   }
 
   render() {
