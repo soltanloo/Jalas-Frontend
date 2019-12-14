@@ -219,7 +219,7 @@ class NewPoll extends Component {
         padding: 10,
       }}>
         <Typography align="center" variant="h4" component="h3">
-          ایجاد جلسهٔ جدید
+          ایجاد نظرسنجی جدید
         </Typography>
         <div>
           <Stepper activeStep={this.state.activeStep} alternativeLabel>
