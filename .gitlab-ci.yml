@@ -21,4 +21,5 @@ build:
 test:
   stage: test
   script:
-    - npm run test
+    - yarn install
+    - CI=true yarn run test
