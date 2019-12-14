@@ -56,6 +56,20 @@ export function inviteToPoll(userEmail, pollId, userId) {
   }
 }
 
+export function removeFromPoll(userEmail, pollId, userId) {
+  return dispatch => {
+    axios.post(`${url}/poll/removeParticipant`,
+      { userEmail, pollId, userId }
+    )
+      .then(res => {
+        toast.success('کاربر با موفقیت لغو دعوت شد');
+      })
+      .catch(err => {
+        toast.error('خطایی در لغو دعوت کاربر به نظرسنجی رخ داده است')
+      })
+  }
+}
+
 export function vote(optionId, pollId, userId) {
   return dispatch => {
     axios.post(`${url}/vote`,

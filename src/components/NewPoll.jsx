@@ -17,12 +17,13 @@ import JalaaliUtils from '@date-io/jalaali';
 import jMoment from 'moment-jalaali';
 import TextField from "@material-ui/core/TextField";
 import moment from "moment";
-import { createPoll, inviteToPoll } from "../actions/poll_actions";
+import { createPoll, inviteToPoll, removeFromPoll } from "../actions/poll_actions";
 
 const initialState = {
   title: '',
   userID: 810195410,
   email: '',
+  emailRemove: '',
   options: [],
   startTime: new Date(),
   finishTime: new Date(),
@@ -62,6 +63,10 @@ class NewPoll extends Component {
     this.setState({ email: event.target.value })
   };
 
+  handleEmailRemoveChange = (event) => {
+    this.setState({ emailRemove: event.target.value })
+  };
+
   handleDeleteOption = (option) => {
     const ops = [...this.state.options];
     let i = ops.indexOf(option);
@@ -76,6 +81,10 @@ class NewPoll extends Component {
   addParticipant = () => {
     this.setState({ email: '' });
     this.props.inviteToPoll(this.state.email, this.state.pollId, this.state.userID);
+  };
+  removeParticipant = () => {
+    this.setState({ emailRemove: '' });
+    this.props.removeFromPoll(this.state.emailRemove, this.state.pollId, this.state.userID);
   };
 
   renderOptions = () => {
@@ -163,6 +172,18 @@ class NewPoll extends Component {
               onChange={this.handleEmailChange}
             />
             <Button onClick={this.addParticipant}>
+              افزودن
+            </Button>
+            <Typography component="p">
+              افراد مدنظر خود را حذف کنید:
+            </Typography>
+            <TextField
+              id="user-email-remove"
+              label="ایمیل"
+              value={this.state.emailRemove}
+              onChange={this.handleEmailRemoveChange}
+            />
+            <Button onClick={this.removeParticipant}>
               افزودن
             </Button>
           </>
@@ -271,6 +292,7 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = {
   createPoll,
   inviteToPoll,
+  removeFromPoll,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(NewPoll);
