@@ -10,6 +10,9 @@ import NewMeeting from './NewMeeting';
 import { ToastContainer } from "react-toastify";
 
 import 'react-toastify/dist/ReactToastify.css';
+import ViewMeeting from "./ViewMeeting";
+import NewPoll from "./NewPoll";
+import ViewPoll from "./ViewPoll";
 
 function App() {
   return (
@@ -29,16 +32,12 @@ function App() {
             </li>
           </ul>
         </nav> */}
-
-        {/* A <Switch> looks through its children <Route>s and
-            renders the first one that matches the current URL. */}
         <Switch>
-          <Route path="/new-meeting">
-            <NewMeeting />
-          </Route>
-          <Route path="/">
-            <Home />
-          </Route>
+          <Route path="/new-meeting" component={NewMeeting} />
+          <Route path={"/meeting/:id"} component={ViewMeeting} />
+          <Route path="/new-poll" component={NewPoll} />
+          <Route path={"/poll/:id"} component={ViewPoll} />
+          <Route path="/" component={Home} />
         </Switch>
       </div>
     </Router>

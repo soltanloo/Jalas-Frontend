@@ -17,9 +17,9 @@ import { cancelMeeting, createMeeting } from "../actions/meeting_actions";
 import jMoment from 'moment-jalaali';
 
 const initialState = {
-  time: null,
-  poll: null,
-  room: null,
+  time: '',
+  poll: '',
+  room: '',
   activeStep: 0
 };
 
@@ -46,16 +46,20 @@ class NewMeeting extends Component {
   };
 
   handleSelectPoll = (event) => {
-    this.setState({ poll: event.target.value });
-    this.props.getPoll(event.target.value);
-  }
+    if (event.target.value !== '') {
+      this.setState({ poll: event.target.value });
+      this.props.getPoll(event.target.value);
+    }
+  };
 
   handleSelectTime = (event) => {
-    this.setState({ time: event.target.value });
-    const option = this.props.selectedPoll.options.find(option => {
-      return option.id == event.target.value;
-    });
-    this.props.getAvailableRooms(option.startTime, option.finishTime);
+    if (event.target.value !== '') {
+      this.setState({ time: event.target.value });
+      const option = this.props.currentPoll.options.find(option => {
+        return parseInt(option.id) === parseInt(event.target.value);
+      });
+      this.props.getAvailableRooms(option.startTime, option.finishTime);
+    }
   };
   
   getStepContent = stepIndex => {
@@ -147,7 +151,7 @@ class NewMeeting extends Component {
   };
 
   renderTimes = () => {
-    return this.props.selectedPoll.options.map(op => {
+    return this.props.currentPoll.options.map(op => {
       return <option key={'option-' + op.id} value={op.id}>{jMoment(op.startTime, 'YYYY-MM-DDTHH:mm:ss').format('jYYYY/jM/jD HH:mm')} تا {jMoment(op.finishTime, 'YYYY-MM-DDTHH:mm:ss').format('jYYYY/jM/jD HH:mm')} - {op.userList.length} رأی</option>;
     })
   };
@@ -180,10 +184,10 @@ class NewMeeting extends Component {
   };
 
   submitMeeting = () => {
-    const option = this.props.selectedPoll.options.find(option => {
-      return option.id == this.state.time;
+    const option = this.props.currentPoll.options.find(option => {
+      return parseInt(option.id) === parseInt(this.state.time);
     });
-    this.props.createMeeting(this.state.room, option.startTime, option.finishTime);
+    this.props.createMeeting(this.state.room, option.startTime, option.finishTime, this.state.poll);
   };
 
   cancelMeeting = () => {
@@ -191,7 +195,7 @@ class NewMeeting extends Component {
   };
 
   canStepForward = () => {
-    return (this.state.activeStep === 0 && this.props.selectedPoll !== null) ||
+    return (this.state.activeStep === 0 && this.props.currentPoll !== null) ||
       (this.state.activeStep === 1 && this.props.availableRooms !== []) || (this.state.activeStep === 2 && this.state.poll !== null && this.state.time !== null && this.state.room !== null);
   };
 
@@ -255,7 +259,7 @@ class NewMeeting extends Component {
 
 const mapStateToProps = state => ({
   polls: state.polls,
-  selectedPoll: state.selectedPoll,
+  currentPoll: state.currentPoll,
   availableRooms: state.availableRooms,
   meeting: state.meeting,
 });
@@ -264,7 +268,7 @@ const mapDispatchToProps = {
   getPolls: () => fetchPolls(),
   getPoll: (id) => fetchPoll(id),
   getAvailableRooms: (from, to) => fetchAvailableRooms(from, to),
-  createMeeting: (roomId, from, to) => createMeeting(roomId, from, to),
+  createMeeting,
   cancelMeeting: (meetingId) => cancelMeeting(meetingId),
 };
 

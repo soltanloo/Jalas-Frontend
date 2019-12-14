@@ -6,6 +6,8 @@ import * as serviceWorker from './serviceWorker';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import { StylesProvider, jssPreset, ThemeProvider } from '@material-ui/core/styles';
 import theme from './theme';
+import axios from 'axios';
+import { toast } from 'react-toastify';
 import { create } from 'jss';
 import rtl from 'jss-rtl';
 import thunk from 'redux-thunk';
@@ -17,6 +19,13 @@ import { createStore, applyMiddleware } from 'redux';
 const jss = create({ plugins: [...jssPreset().plugins, rtl()] });
 
 const createStoreWithMiddleware = composeWithDevTools(applyMiddleware(thunk))(createStore);
+
+axios.interceptors.response.use(undefined, function (error) {
+  if(error.response.status === 404) {
+    toast.warn("صفحهٔ موردنظر یافت نشد");
+  }
+  return Promise.reject(error);
+});
 
 ReactDOM.render(
   <Provider store={createStoreWithMiddleware(reducers)}>
