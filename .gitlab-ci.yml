@@ -5,13 +5,19 @@ stages:
   - test
   - integration
 cache:
+  key: cache_yarn
   paths:
-    - node_modules/
+    - .cache_yarn
 build:
   stage: build
   script:
-    - npm install
-    - npm run build
+    - yarn install
+    - yarn run build
+  only:
+    - master
+  artifacts:
+    paths:
+      - dist
 test:
   stage: test
   script:
