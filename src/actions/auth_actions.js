@@ -5,11 +5,9 @@ import { toast } from 'react-toastify';
 import { timeout } from 'q';
 import baseURL from '../config/config';
 
-const url = 'http://185.166.107.169:32090/joboonja';
 const LOGIN_REQUEST = 'LOGIN_REQUEST';
 const LOGIN_FAILURE = 'LOGIN_FAILURE';
 const LOGIN_SUCCESS = 'LOGIN_SUCCESS';
-const REGISTER_FAILURE = 'REGISTER_FAILURE';
 const LOGOUT = 'LOGOUT';
 
 export function login(credentials, callback) {
@@ -26,6 +24,10 @@ export function login(credentials, callback) {
       });
       // callback();
     }).catch((error) => {
+      dispatch({
+        type: LOGIN_FAILURE,
+        errorMessage: 'ورود با خطا مواجه شد',
+      });
       toast.error('ورود با خطا مواجه شد');
     });
   };

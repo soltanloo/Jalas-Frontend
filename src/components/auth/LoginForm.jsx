@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
 import { Field, reduxForm } from 'redux-form';
-import { Redirect, Link } from 'react-router-dom';
+import { Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { toast } from 'react-toastify';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import TextField from '@material-ui/core/TextField';
@@ -35,7 +34,7 @@ class LoginForm extends Component {
     if (this.props.auth.user) {
       return <Redirect to="/" />;
     }
-    const { handleSubmit, submitting } = this.props;
+    const { handleSubmit } = this.props;
     return (
       <Paper
         style={{
