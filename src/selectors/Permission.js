@@ -1,4 +1,4 @@
-import { createSelector } from 'reselect/es';
+import { createSelector } from 'reselect';
 
 const userId = (state) => state.auth.user;
 
