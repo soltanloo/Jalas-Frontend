@@ -7,14 +7,14 @@ import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
 import CardActions from '@material-ui/core/CardActions';
+import { DateTimePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
+import JalaaliUtils from '@date-io/jalaali';
+import moment from 'moment';
 import {
   addOption, fetchPoll, removeOption, vote,
 } from '../actions/poll_actions';
 import { justEnglishDigits, toEnglishDigits, toPersianDigits } from '../helpers/lang_helper';
 import getPermission from '../selectors/Permission';
-import { DateTimePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
-import JalaaliUtils from "@date-io/jalaali";
-import moment from "moment";
 
 class ViewPoll extends Component {
   constructor(props) {
@@ -51,7 +51,7 @@ class ViewPoll extends Component {
     );
   };
 
-  handleRemoveOption = optionId => {
+  handleRemoveOption = (optionId) => {
     this.props.removeOption(this.props.curr.id, this.props.user, optionId, () => this.props.fetchPoll(this.props.curr.id));
   };
 
@@ -81,7 +81,7 @@ class ViewPoll extends Component {
       </CardContent>
       <CardActions>
         <Button disabled={option.userList.some((userId) => parseInt(userId) === parseInt(this.state.userId))} onClick={() => this.props.vote(option.id, this.props.curr.id, this.state.userId)} size="small">ثبت رأی</Button>
-        {true
+        {this.props.permissions.isCurrentUser(this.props.userId)
               && <Button onClick={() => this.handleRemoveOption(option.id)}>حذف</Button>}
       </CardActions>
     </Card>
@@ -113,7 +113,8 @@ class ViewPoll extends Component {
         >
           {this.renderOptions()}
         </div>
-        {true &&
+        {this.props.permissions.isCurrentUser(this.props.userId)
+          && (
           <div>
             <Typography component="p">
               افزودن گزینه‌های جدید:
@@ -127,7 +128,7 @@ class ViewPoll extends Component {
                   okLabel="تأیید"
                   cancelLabel="لغو"
                   clearLabel="پاک کردن"
-                  labelFunc={date => (date ? date.format('jYYYY/jM/jD HH:mm') : "")}
+                  labelFunc={(date) => (date ? date.format('jYYYY/jM/jD HH:mm') : '')}
                 />
               </MuiPickersUtilsProvider>
             </div>
@@ -140,7 +141,7 @@ class ViewPoll extends Component {
                   okLabel="تأیید"
                   cancelLabel="لغو"
                   clearLabel="پاک کردن"
-                  labelFunc={date => (date ? date.format('jYYYY/jM/jD HH:mm') : "")}
+                  labelFunc={(date) => (date ? date.format('jYYYY/jM/jD HH:mm') : '')}
                 />
               </MuiPickersUtilsProvider>
               <Button onClick={this.handleAddTimes}>
@@ -148,7 +149,7 @@ class ViewPoll extends Component {
               </Button>
             </div>
           </div>
-        }
+          )}
       </div>
     );
   }
