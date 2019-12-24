@@ -67,6 +67,34 @@ export function removeFromPoll(userEmail, pollId, userId) {
   };
 }
 
+export function addOption(pollId, userId, startTime, finishTime, cb) {
+  return (dispatch) => {
+    axios.post(`${url}/poll/addOption`,
+      { startTime, finishTime, userId, pollId })
+      .then((res) => {
+        cb();
+        toast.success('گزینه با موفقیت به نظرسنجی اضافه شد');
+      })
+      .catch((err) => {
+        toast.error('خطایی در افزودن گزینه به نظرسنجی رخ داده است');
+      });
+  };
+}
+
+export function removeOption(pollId, userId, optionId, cb) {
+  return (dispatch) => {
+    axios.post(`${url}/poll/removeOption`,
+      { optionId, userId, pollId })
+      .then((res) => {
+        cb();
+        toast.success('گزینه با موفقیت از نظرسنجی حذف شد');
+      })
+      .catch((err) => {
+        toast.error('خطایی در حذف گزینه از نظرسنجی رخ داده است');
+      });
+  };
+}
+
 export function vote(optionId, pollId, userId) {
   return (dispatch) => {
     axios.post(`${url}/vote`,
