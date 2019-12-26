@@ -1,9 +1,8 @@
 import axios from 'axios';
-import QS from 'querystring';
 import jwt_decode from 'jwt-decode';
 import { toast } from 'react-toastify';
 import { timeout } from 'q';
-import baseURL from '../config/config';
+import Config from '../config/config';
 
 const LOGIN_REQUEST = 'LOGIN_REQUEST';
 const LOGIN_FAILURE = 'LOGIN_FAILURE';
@@ -14,8 +13,8 @@ export function login(credentials, callback) {
   return (dispatch) => {
     dispatch({ type: LOGIN_REQUEST });
 
-    axios.post(`${baseURL}/auth/login`, QS.stringify(credentials)).then((res) => {
-      localStorage.authToken = res.data.message;
+    axios.post(`${Config.baseURL}/login`, credentials).then((res) => {
+      localStorage.authToken = res.headers['user-token'];
       timeout(300);
       toast.success('ورود با موفقیت انجام شد');
       dispatch({
