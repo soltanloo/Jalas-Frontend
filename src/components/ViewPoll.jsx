@@ -15,6 +15,7 @@ import {
 } from '../actions/poll_actions';
 import { justEnglishDigits, toEnglishDigits, toPersianDigits } from '../helpers/lang_helper';
 import getPermission from '../selectors/Permission';
+import Comments from "./Comments";
 
 class ViewPoll extends Component {
   constructor(props) {
@@ -150,6 +151,7 @@ class ViewPoll extends Component {
             </div>
           </div>
           )}
+          <Comments comments={this.props.curr.comments} />
       </div>
     );
   }
