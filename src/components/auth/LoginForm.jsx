@@ -49,7 +49,7 @@ class LoginForm extends Component {
         <div>
           <form onSubmit={handleSubmit(this.onSubmit.bind(this))}>
             <div>
-              <Field name="username" required type="text" id="username" label="نام کاربری" component={this.renderField} />
+              <Field name="email" required type="email" id="email" label="رایانامه" component={this.renderField} />
             </div>
             <div>
               <Field name="password" required type="password" id="password" label="گذرواژه" component={this.renderField} />
@@ -71,10 +71,8 @@ class LoginForm extends Component {
 
 const validate = (values) => {
   const errors = {};
-  if (!values.username) {
-    errors.username = 'ضروری';
-  } else if (!new RegExp('^(?![_.])(?!.*[_.]{2})[a-zA-Z0-9._]+(?<![_.])$').test(values.username)) {
-    errors.username = 'نام کاربری فرمت صحیحی ندارد';
+  if (!values.email) {
+    errors.email = 'ضروری';
   }
   if (!values.password) {
     errors.password = 'ضروری';
