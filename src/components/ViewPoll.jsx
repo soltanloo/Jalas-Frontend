@@ -81,7 +81,7 @@ class ViewPoll extends Component {
       </CardContent>
       <CardActions>
         <Button disabled={option.userList.some((userId) => parseInt(userId) === parseInt(this.state.userId))} onClick={() => this.props.vote(option.id, this.props.curr.id, this.state.userId)} size="small">ثبت رأی</Button>
-        {this.props.permissions.isCurrentUser(this.props.userId)
+        {this.props.permissions.isCurrentUser(this.props.curr.ownerId)
               && <Button onClick={() => this.handleRemoveOption(option.id)}>حذف</Button>}
       </CardActions>
     </Card>
@@ -100,12 +100,12 @@ class ViewPoll extends Component {
       }}
       >
         <h3>{this.props.curr.title}</h3>
-        <TextField
-          id="userId"
-          label="شناسه کاربری رأی‌دهنده"
-          value={toPersianDigits(this.state.userId)}
-          onChange={this.handleUserIdChange}
-        />
+        {/*<TextField*/}
+        {/*  id="userId"*/}
+        {/*  label="شناسه کاربری رأی‌دهنده"*/}
+        {/*  value={toPersianDigits(this.state.userId)}*/}
+        {/*  onChange={this.handleUserIdChange}*/}
+        {/*/>*/}
         <div style={{
           display: 'flex',
           flexWrap: 'wrap',
@@ -113,7 +113,7 @@ class ViewPoll extends Component {
         >
           {this.renderOptions()}
         </div>
-        {this.props.permissions.isCurrentUser(this.props.userId)
+        {this.props.permissions.isCurrentUser(this.props.curr.ownerId)
           && (
           <div>
             <Typography component="p">

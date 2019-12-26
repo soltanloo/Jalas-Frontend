@@ -1,18 +1,18 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux'
+import { connect } from 'react-redux';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import Stepper from '@material-ui/core/Stepper';
 import Step from '@material-ui/core/Step';
 import StepLabel from '@material-ui/core/StepLabel';
 import Button from '@material-ui/core/Button';
-import { toPersianDigits } from '../helpers/lang_helper';
 import { DateTimePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
 import JalaaliUtils from '@date-io/jalaali';
 import jMoment from 'moment-jalaali';
-import TextField from "@material-ui/core/TextField";
-import moment from "moment";
-import { createPoll, inviteToPoll, removeFromPoll } from "../actions/poll_actions";
+import TextField from '@material-ui/core/TextField';
+import moment from 'moment';
+import { toPersianDigits } from '../helpers/lang_helper';
+import { createPoll, inviteToPoll, removeFromPoll } from '../actions/poll_actions';
 
 const initialState = {
   title: '',
@@ -22,7 +22,7 @@ const initialState = {
   options: [],
   startTime: new Date(),
   finishTime: new Date(),
-  activeStep: 0
+  activeStep: 0,
 };
 
 class NewPoll extends Component {
@@ -33,9 +33,7 @@ class NewPoll extends Component {
     };
   }
 
-  getSteps = () => {
-    return ['انتخاب عنوان', 'ساخت گزینه‌های نظرسنجی', 'دعوت افراد'];
-  };
+  getSteps = () => ['انتخاب عنوان', 'ساخت گزینه‌های نظرسنجی', 'دعوت افراد'];
 
   handleTitleChange = (event) => {
     this.setState({ title: event.target.value });
@@ -51,25 +49,25 @@ class NewPoll extends Component {
 
   handleAddTimes = () => {
     const { startTime, finishTime } = this.state;
-    this.setState({ options: [...this.state.options, { startTime, finishTime }] })
+    this.setState({ options: [...this.state.options, { startTime, finishTime }] });
   };
 
   handleEmailChange = (event) => {
-    this.setState({ email: event.target.value })
+    this.setState({ email: event.target.value });
   };
 
   handleEmailRemoveChange = (event) => {
-    this.setState({ emailRemove: event.target.value })
+    this.setState({ emailRemove: event.target.value });
   };
 
   handleDeleteOption = (option) => {
     const ops = [...this.state.options];
-    let i = ops.indexOf(option);
+    const i = ops.indexOf(option);
     if (i !== -1) {
       ops.splice(i, 1);
       this.setState({
-        options: ops
-      })
+        options: ops,
+      });
     }
   };
 
@@ -77,25 +75,25 @@ class NewPoll extends Component {
     this.setState({ email: '' });
     this.props.inviteToPoll(this.state.email, this.state.pollId, this.state.userID);
   };
+
   removeParticipant = () => {
     this.setState({ emailRemove: '' });
     this.props.removeFromPoll(this.state.emailRemove, this.state.pollId, this.state.userID);
   };
 
-  renderOptions = () => {
-    return this.state.options.map(option => {
-      return (
-        <li>
-          {jMoment(option.startTime).format('jYYYY/jM/jD HH:mm')} تا {jMoment(option.finishTime).format('jYYYY/jM/jD HH:mm')}
-          <Button onClick={() => this.handleDeleteOption(option)}>
+  renderOptions = () => this.state.options.map((option) => (
+    <li>
+      {jMoment(option.startTime).format('jYYYY/jM/jD HH:mm')}
+      {' '}
+تا
+      {jMoment(option.finishTime).format('jYYYY/jM/jD HH:mm')}
+      <Button onClick={() => this.handleDeleteOption(option)}>
             حذف
-          </Button>
-        </li>
-        )
-    });
-  };
+      </Button>
+    </li>
+  ));
 
-  getStepContent = stepIndex => {
+  getStepContent = (stepIndex) => {
     switch (stepIndex) {
       case 0:
         return (
@@ -126,7 +124,7 @@ class NewPoll extends Component {
                   okLabel="تأیید"
                   cancelLabel="لغو"
                   clearLabel="پاک کردن"
-                  labelFunc={date => (date ? date.format('jYYYY/jM/jD HH:mm') : "")}
+                  labelFunc={(date) => (date ? date.format('jYYYY/jM/jD HH:mm') : '')}
                 />
               </MuiPickersUtilsProvider>
             </div>
@@ -139,7 +137,7 @@ class NewPoll extends Component {
                   okLabel="تأیید"
                   cancelLabel="لغو"
                   clearLabel="پاک کردن"
-                  labelFunc={date => (date ? date.format('jYYYY/jM/jD HH:mm') : "")}
+                  labelFunc={(date) => (date ? date.format('jYYYY/jM/jD HH:mm') : '')}
                 />
               </MuiPickersUtilsProvider>
               <Button onClick={this.handleAddTimes}>
@@ -188,22 +186,22 @@ class NewPoll extends Component {
     }
   };
 
-  setActiveStep = step => {
+  setActiveStep = (step) => {
     this.setState({ activeStep: step });
   };
 
   submitPoll = () => {
     this.props.createPoll({
-      userID: this.state.userID,
+      // userID: this.state.userID,
       title: this.state.title,
-      options: this.state.options.map(option => {
-        return {
-          startTime: moment(option.startTime).format('YYYY-MM-DDTHH:mm:ss'),
-          finishTime: moment(option.finishTime).format('YYYY-MM-DDTHH:mm:ss'),
-        }
-      })
-    }).then(res => {
-      this.setState({ pollId: res.data })
+      options: this.state.options.map((option) => ({
+        startTime: moment(option.startTime).format('YYYY-MM-DDTHH:mm:ss'),
+        finishTime: moment(option.finishTime).format('YYYY-MM-DDTHH:mm:ss'),
+      })),
+    }).then((res) => {
+      this.setState({ pollId: res.data });
+    }).catch((err) => {
+      console.log(err);
     });
   };
 
@@ -223,17 +221,16 @@ class NewPoll extends Component {
     this.setActiveStep(0);
   };
 
-  canStepForward = () => {
-    return (this.state.activeStep === 0 && this.props.currentPoll !== null) ||
-      (this.state.activeStep === 1 && this.props.availableRooms !== []) || (this.state.activeStep === 2 && this.state.poll !== null && this.state.time !== null && this.state.room !== null);
-  };
+  canStepForward = () => (this.state.activeStep === 0 && this.props.currentPoll !== null)
+      || (this.state.activeStep === 1 && this.props.availableRooms !== []) || (this.state.activeStep === 2 && this.state.poll !== null && this.state.time !== null && this.state.room !== null);
 
   render() {
     const steps = this.getSteps();
     return (
       <Paper style={{
         padding: 10,
-      }}>
+      }}
+      >
         <Typography align="center" variant="h4" component="h3">
           ایجاد نظرسنجی جدید
         </Typography>
@@ -276,11 +273,11 @@ class NewPoll extends Component {
           </div>
         </div>
       </Paper>
-    )
+    );
   }
 }
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
 
 });
 

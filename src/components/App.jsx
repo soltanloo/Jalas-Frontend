@@ -17,16 +17,16 @@ import ViewMeeting from './ViewMeeting';
 import NewPoll from './NewPoll';
 import ViewPoll from './ViewPoll';
 import Config from '../config/config';
-import AuthPage from "./auth/AuthPage";
-import ViewPolls from "./ViewPolls";
+import AuthPage from './auth/AuthPage';
+import ViewPolls from './ViewPolls';
 
 axios.defaults.baseURL = Config.baseURL;
 axios.defaults.headers.post['Content-Type'] = 'application/json';
 axios.defaults.headers.put['Content-Type'] = 'application/json';
 
 const authToken = localStorage.getItem('authToken');
-if (authToken) axios.defaults.headers.common.Authorization = `JWT ${authToken}`;
-
+if (authToken) axios.defaults.headers.common['user-token'] = `${authToken}`;
+axios.defaults.headers.common['filter-type'] = 'local';
 class App extends React.Component {
   componentDidMount() {
     if (localStorage.authToken) {
