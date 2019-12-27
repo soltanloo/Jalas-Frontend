@@ -15,6 +15,8 @@ import { fetchPoll, fetchPolls } from "../actions/poll_actions";
 import { fetchAvailableRooms } from "../actions/room_actions";
 import { cancelMeeting, createMeeting } from "../actions/meeting_actions";
 import jMoment from 'moment-jalaali';
+import IconButton from "@material-ui/core/IconButton";
+import RefreshIcon from '@material-ui/icons/Refresh';
 
 const initialState = {
   time: '',
@@ -61,7 +63,14 @@ class NewMeeting extends Component {
       this.props.getAvailableRooms(option.startTime, option.finishTime);
     }
   };
-  
+
+  handleFetchRooms = () => {
+    const option = this.props.currentPoll.options.find(option => {
+      return parseInt(option.id) === parseInt(this.state.time);
+    });
+    this.props.getAvailableRooms(option.startTime, option.finishTime);
+  };
+
   getStepContent = stepIndex => {
     switch (stepIndex) {
       case 0:
@@ -137,6 +146,9 @@ class NewMeeting extends Component {
                 {this.renderRooms()}
               </Select>
             </FormControl>
+            <IconButton onClick={this.handleFetchRooms}>
+              <RefreshIcon />
+            </IconButton>
           </>
         );
       default:
