@@ -21,8 +21,8 @@ import AuthPage from './auth/AuthPage';
 import ViewPolls from './ViewPolls';
 
 axios.defaults.baseURL = Config.baseURL;
-axios.defaults.headers.post['Content-Type'] = 'application/json';
-axios.defaults.headers.put['Content-Type'] = 'application/json';
+axios.defaults.headers.post['Content-Type'] = 'application/json; charset=utf-8';
+axios.defaults.headers.put['Content-Type'] = 'application/json; charset=utf-8';
 
 const authToken = localStorage.getItem('authToken');
 if (authToken) axios.defaults.headers.common['user-token'] = `${authToken}`;
