@@ -108,3 +108,31 @@ export function vote(optionId, pollId, userId) {
       });
   };
 }
+
+export function addComment(data, cb) {
+  return (dispatch) => {
+    axios.post(`${url}/poll/comment`,
+      data)
+      .then((res) => {
+        cb();
+        toast.success('نظر با موفقیت ثبت شد');
+      })
+      .catch((err) => {
+        toast.error('ثبت نظر با خطا مواجه شد');
+      });
+  };
+}
+
+export function deleteComment(commentId, cb) {
+  return (dispatch) => {
+    axios.post(`${url}/poll/removeComment`,
+      { commentId })
+      .then((res) => {
+        cb();
+        toast.success('نظر با موفقیت حذف شد');
+      })
+      .catch((err) => {
+        toast.error('حذف نظر با خطا مواجه شد');
+      });
+  };
+}

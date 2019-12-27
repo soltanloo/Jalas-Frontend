@@ -11,11 +11,11 @@ import { DateTimePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
 import JalaaliUtils from '@date-io/jalaali';
 import moment from 'moment';
 import {
-  addOption, fetchPoll, removeOption, vote,
+  addOption, fetchPoll, removeOption, vote, addComment, deleteComment,
 } from '../actions/poll_actions';
 import { justEnglishDigits, toEnglishDigits, toPersianDigits } from '../helpers/lang_helper';
 import getPermission from '../selectors/Permission';
-import Comments from "./Comments";
+import Comments from './Comments';
 
 class ViewPoll extends Component {
   constructor(props) {
@@ -88,6 +88,26 @@ class ViewPoll extends Component {
     </Card>
   ));
 
+  handleSubmitComment = (text) => {
+    this.props.addComment({
+      pollId: this.props.curr.id,
+      text
+    }, () => this.props.fetchPoll(this.props.curr.id));
+  };
+
+  handleSubmitReply = (parentId, text) => {
+    this.props.addComment({
+      pollId: this.props.curr.id,
+      text,
+      repliedCommentId: parentId,
+    }, () => this.props.fetchPoll(this.props.curr.id));
+  };
+
+  handleDeleteComment = (commentId) => {
+    this.props.deleteComment(commentId,
+      () => this.props.fetchPoll(this.props.curr.id));
+  };
+
   render() {
     if (!this.props.curr) {
       return <p>در حال بارگذاری...</p>;
@@ -101,12 +121,12 @@ class ViewPoll extends Component {
       }}
       >
         <h3>{this.props.curr.title}</h3>
-        {/*<TextField*/}
-        {/*  id="userId"*/}
-        {/*  label="شناسه کاربری رأی‌دهنده"*/}
-        {/*  value={toPersianDigits(this.state.userId)}*/}
-        {/*  onChange={this.handleUserIdChange}*/}
-        {/*/>*/}
+        {/* <TextField */}
+        {/*  id="userId" */}
+        {/*  label="شناسه کاربری رأی‌دهنده" */}
+        {/*  value={toPersianDigits(this.state.userId)} */}
+        {/*  onChange={this.handleUserIdChange} */}
+        {/* /> */}
         <div style={{
           display: 'flex',
           flexWrap: 'wrap',
@@ -151,7 +171,13 @@ class ViewPoll extends Component {
             </div>
           </div>
           )}
-          <Comments comments={this.props.curr.comments} />
+        <Comments
+          comments={this.props.curr.comments}
+          onSubmitComment={this.handleSubmitComment}
+          onDeleteComment={this.handleDeleteComment}
+          onSubmitReply={this.handleSubmitReply}
+          hasPermToDelete={(commenterId) => this.props.permissions.isCurrentUser(commenterId)}
+        />
       </div>
     );
   }
@@ -173,6 +199,8 @@ const mapDispatchToProps = {
   vote,
   addOption,
   removeOption,
+  addComment,
+  deleteComment,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(ViewPoll);
