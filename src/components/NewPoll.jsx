@@ -158,27 +158,29 @@ class NewPoll extends Component {
             <Typography component="p">
               افراد مدنظر خود را دعوت کنید:
             </Typography>
-            <TextField
-              id="user-email"
-              label="ایمیل"
-              value={this.state.email}
-              onChange={this.handleEmailChange}
-            />
-            <Button onClick={this.addParticipant}>
-              افزودن
-            </Button>
-            <Typography component="p">
-              افراد مدنظر خود را حذف کنید:
-            </Typography>
-            <TextField
-              id="user-email-remove"
-              label="ایمیل"
-              value={this.state.emailRemove}
-              onChange={this.handleEmailRemoveChange}
-            />
-            <Button onClick={this.removeParticipant}>
-              افزودن
-            </Button>
+            <div style={{ display: 'flex', alignItems: 'baseline' }}>
+              <TextField
+                id="user-email"
+                label="ایمیل"
+                value={this.state.email}
+                onChange={this.handleEmailChange}
+              />
+              <Button onClick={this.addParticipant}>
+                دعوت
+              </Button>
+              <Typography component="p">
+                افراد مدنظر خود را حذف کنید:
+              </Typography>
+              <TextField
+                id="user-email-remove"
+                label="ایمیل"
+                value={this.state.emailRemove}
+                onChange={this.handleEmailRemoveChange}
+              />
+              <Button onClick={this.removeParticipant}>
+                لغو دعوت
+              </Button>
+            </div>
           </>
         );
       default:

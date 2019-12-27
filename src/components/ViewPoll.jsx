@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import jMoment from 'moment-jalaali';
-import { TextField, Button } from '@material-ui/core';
+import { Button } from '@material-ui/core';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
@@ -10,8 +10,9 @@ import CardActions from '@material-ui/core/CardActions';
 import { DateTimePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
 import JalaaliUtils from '@date-io/jalaali';
 import moment from 'moment';
+import TextField from '@material-ui/core/TextField';
 import {
-  addOption, fetchPoll, removeOption, vote, addComment, deleteComment,
+  addOption, fetchPoll, removeOption, vote, addComment, deleteComment, inviteToPoll, removeFromPoll,
 } from '../actions/poll_actions';
 import { justEnglishDigits, toEnglishDigits, toPersianDigits } from '../helpers/lang_helper';
 import getPermission from '../selectors/Permission';
@@ -24,6 +25,8 @@ class ViewPoll extends Component {
       userId: '',
       startTime: new Date(),
       finishTime: new Date(),
+      email: '',
+      emailRemove: '',
     };
   }
 
@@ -81,9 +84,18 @@ class ViewPoll extends Component {
         </Typography>
       </CardContent>
       <CardActions>
-        <Button disabled={option.userList.some((userId) => parseInt(userId) === parseInt(this.state.userId))} onClick={() => this.props.vote(option.id, this.props.curr.id, this.state.userId)} size="small">ثبت رأی</Button>
+        {!option.userList.some((id) => id === parseInt(this.props.userId))
+          && (
+          <Button
+            disabled={option.userList.some((userId) => parseInt(userId) === parseInt(this.state.userId))}
+            onClick={() => this.props.vote(option.id, this.props.curr.id, this.state.userId)}
+            size="small"
+          >
+            ثبت رأی
+          </Button>
+          )}
         {this.props.permissions.isCurrentUser(this.props.curr.ownerId)
-              && <Button onClick={() => this.handleRemoveOption(option.id)}>حذف</Button>}
+              && <Button color="secondary" onClick={() => this.handleRemoveOption(option.id)}>حذف</Button>}
       </CardActions>
     </Card>
   ));
@@ -91,7 +103,7 @@ class ViewPoll extends Component {
   handleSubmitComment = (text) => {
     this.props.addComment({
       pollId: this.props.curr.id,
-      text
+      text,
     }, () => this.props.fetchPoll(this.props.curr.id));
   };
 
@@ -108,6 +120,24 @@ class ViewPoll extends Component {
       () => this.props.fetchPoll(this.props.curr.id));
   };
 
+  handleEmailChange = (event) => {
+    this.setState({ email: event.target.value });
+  };
+
+  handleEmailRemoveChange = (event) => {
+    this.setState({ emailRemove: event.target.value });
+  };
+
+  addParticipant = () => {
+    this.setState({ email: '' });
+    this.props.inviteToPoll(this.state.email, this.props.curr.id, this.state.userID);
+  };
+
+  removeParticipant = () => {
+    this.setState({ emailRemove: '' });
+    this.props.removeFromPoll(this.state.emailRemove, this.props.curr.id, this.state.userID);
+  };
+
   render() {
     if (!this.props.curr) {
       return <p>در حال بارگذاری...</p>;
@@ -121,12 +151,6 @@ class ViewPoll extends Component {
       }}
       >
         <h3>{this.props.curr.title}</h3>
-        {/* <TextField */}
-        {/*  id="userId" */}
-        {/*  label="شناسه کاربری رأی‌دهنده" */}
-        {/*  value={toPersianDigits(this.state.userId)} */}
-        {/*  onChange={this.handleUserIdChange} */}
-        {/* /> */}
         <div style={{
           display: 'flex',
           flexWrap: 'wrap',
@@ -137,6 +161,30 @@ class ViewPoll extends Component {
         {this.props.permissions.isCurrentUser(this.props.curr.ownerId)
           && (
           <div>
+            <Typography component="p">
+              دعوت افراد جدید:
+            </Typography>
+            <div style={{ display: 'flex', alignItems: 'baseline' }}>
+              <TextField
+                id="user-email"
+                label="ایمیل"
+                value={this.state.email}
+                onChange={this.handleEmailChange}
+              />
+              <Button onClick={this.addParticipant}>
+                دعوت
+              </Button>
+              <TextField
+                id="user-email-remove"
+                label="ایمیل"
+                value={this.state.emailRemove}
+                onChange={this.handleEmailRemoveChange}
+              />
+              <Button onClick={this.removeParticipant}>
+                لغو دعوت
+              </Button>
+            </div>
+            <br />
             <Typography component="p">
               افزودن گزینه‌های جدید:
             </Typography>
@@ -201,6 +249,8 @@ const mapDispatchToProps = {
   removeOption,
   addComment,
   deleteComment,
+  inviteToPoll,
+  removeFromPoll,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(ViewPoll);

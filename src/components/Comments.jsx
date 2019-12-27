@@ -35,7 +35,7 @@ class Comments extends Component {
   };
 
   renderComment = (comment) => (
-    <Card style={{ margin: 5, backgroundColor: comment.reply ? '#e6e6e6' : 'white' }}>
+    <Card key={comment.id} style={{ margin: 5, backgroundColor: comment.reply ? '#e6e6e6' : 'white' }}>
       <CardHeader
         avatar={(
           <Avatar style={{ color: 'black' }}>
