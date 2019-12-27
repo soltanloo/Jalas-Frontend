@@ -19,6 +19,7 @@ import ViewPoll from './ViewPoll';
 import Config from '../config/config';
 import AuthPage from './auth/AuthPage';
 import ViewPolls from './ViewPolls';
+import ViewMeetings from "./ViewMeetings";
 
 axios.defaults.baseURL = Config.baseURL;
 axios.defaults.headers.post['Content-Type'] = 'application/json; charset=utf-8';
@@ -54,6 +55,7 @@ class App extends React.Component {
         </nav> */}
           <Switch>
             <Route path="/new-meeting" component={NewMeeting} />
+            <Route path={'/meetings'} component={ViewMeetings} />
             <Route path={'/meeting/:id'} component={ViewMeeting} />
             <Route path="/new-poll" component={NewPoll} />
             <Route path={'/polls'} component={ViewPolls} />

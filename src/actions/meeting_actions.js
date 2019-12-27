@@ -1,13 +1,14 @@
 import axios from 'axios';
 import { toast } from 'react-toastify';
+import Config from '../config/config';
 
-const url = 'http://localhost:8080/api';
 const CREATE_MEETING_SUCCESS = 'CREATE_MEETING_SUCCESS';
 const FETCH_MEETING = 'FETCH_MEETING';
+const FETCH_MEETINGS = 'FETCH_MEETINGS';
 
 export function createMeeting(roomId, from, to, pollId) {
   return (dispatch) => {
-    axios.post(`${url}/addMeeting`,
+    axios.post(`${Config.baseURL}/addMeeting`,
       {
         roomNumber: roomId, startTime: from, finishTime: to, pollId,
       })
@@ -26,7 +27,7 @@ export function createMeeting(roomId, from, to, pollId) {
 
 export function fetchMeeting(id) {
   return (dispatch) => {
-    axios.get(`${url}/meeting/${id}`)
+    axios.get(`${Config.baseURL}/meeting/${id}`)
       .then((res) => {
         dispatch({
           type: FETCH_MEETING,
@@ -36,9 +37,21 @@ export function fetchMeeting(id) {
   };
 }
 
+export function fetchMeetings() {
+  return (dispatch) => {
+    axios.get(`${Config.baseURL}/meeting/`)
+      .then((res) => {
+        dispatch({
+          type: FETCH_MEETINGS,
+          meetings: res.data,
+        });
+      });
+  };
+}
+
 export function cancelMeeting(meetingId) {
   return (dispatch) => {
-    axios.post(`${url}/meeting/${meetingId}/cancel`)
+    axios.post(`${Config.baseURL}/meeting/${meetingId}/cancel`)
       .then((res) => {
         toast.success('جلسه با موفقیت لغو شد');
       })
