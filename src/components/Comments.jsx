@@ -23,10 +23,12 @@ class Comments extends Component {
 
   handleSubmitComment = () => {
     this.props.onSubmitComment(this.state.commentText);
+    this.setState({ commentText: '' });
   };
 
   handleSubmitReply = (parentId) => {
     this.props.onSubmitReply(parentId, this.state.replies[parentId]);
+    this.setState({ expanded: { ...this.state.expanded, [parentId]: false }, replies: { ...this.state.replies, [parentId]: '' } })
   };
 
   handleChangeReply = (parentId, event) => {
