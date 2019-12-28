@@ -43,4 +43,8 @@ class Header extends Component {
   }
 }
 
+Header.propTypes = {
+  isLoggedIn: PropTypes.bool.isRequired,
+};
+
 export default connect(null, { logout })(Header);

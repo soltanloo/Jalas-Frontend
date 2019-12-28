@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux'
+import { connect } from 'react-redux';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import InputLabel from '@material-ui/core/InputLabel';
@@ -10,20 +10,20 @@ import Stepper from '@material-ui/core/Stepper';
 import Step from '@material-ui/core/Step';
 import StepLabel from '@material-ui/core/StepLabel';
 import Button from '@material-ui/core/Button';
-import { toPersianDigits } from '../helpers/lang_helper';
-import { fetchPoll, fetchPolls } from "../actions/poll_actions";
-import { fetchAvailableRooms } from "../actions/room_actions";
-import { cancelMeeting, createMeeting } from "../actions/meeting_actions";
 import jMoment from 'moment-jalaali';
-import IconButton from "@material-ui/core/IconButton";
+import IconButton from '@material-ui/core/IconButton';
 import RefreshIcon from '@material-ui/icons/Refresh';
-import Divider from "@material-ui/core/Divider";
+import Divider from '@material-ui/core/Divider';
+import { toPersianDigits } from '../helpers/lang_helper';
+import { fetchPoll, fetchPolls } from '../actions/poll_actions';
+import { fetchAvailableRooms } from '../actions/room_actions';
+import { cancelMeeting, createMeeting } from '../actions/meeting_actions';
 
 const initialState = {
   time: '',
   poll: '',
   room: '',
-  activeStep: 0
+  activeStep: 0,
 };
 
 class NewMeeting extends Component {
@@ -37,16 +37,14 @@ class NewMeeting extends Component {
   static propTypes = {
     getPolls: PropTypes.func.isRequired,
     getPoll: PropTypes.func.isRequired,
-    getAvailableRooms: PropTypes.func.isRequired
+    getAvailableRooms: PropTypes.func.isRequired,
   };
 
   componentDidMount() {
     this.props.getPolls();
   }
 
-  getSteps = () => {
-    return ['انتخاب نظرسنجی', 'نهایی‌سازی زمان جلسه', 'انتخاب اتاق جلسه'];
-  };
+  getSteps = () => ['انتخاب نظرسنجی', 'نهایی‌سازی زمان جلسه', 'انتخاب اتاق جلسه'];
 
   handleSelectPoll = (event) => {
     if (event.target.value !== '') {
@@ -58,21 +56,17 @@ class NewMeeting extends Component {
   handleSelectTime = (event) => {
     if (event.target.value !== '') {
       this.setState({ time: event.target.value });
-      const option = this.props.currentPoll.options.find(option => {
-        return parseInt(option.id) === parseInt(event.target.value);
-      });
+      const option = this.props.currentPoll.options.find((option) => parseInt(option.id) === parseInt(event.target.value));
       this.props.getAvailableRooms(option.startTime, option.finishTime);
     }
   };
 
   handleFetchRooms = () => {
-    const option = this.props.currentPoll.options.find(option => {
-      return parseInt(option.id) === parseInt(this.state.time);
-    });
+    const option = this.props.currentPoll.options.find((option) => parseInt(option.id) === parseInt(this.state.time));
     this.props.getAvailableRooms(option.startTime, option.finishTime);
   };
 
-  getStepContent = stepIndex => {
+  getStepContent = (stepIndex) => {
     switch (stepIndex) {
       case 0:
         return (
@@ -157,25 +151,27 @@ class NewMeeting extends Component {
     }
   };
 
-  renderPolls = () => {
-    return this.props.polls.map(poll => {
-      return <option key={'poll-' + poll.id} value={poll.id}>{poll.title}</option>;
-    })
-  };
+  renderPolls = () => this.props.polls.map((poll) => <option key={`poll-${poll.id}`} value={poll.id}>{poll.title}</option>);
 
-  renderTimes = () => {
-    return this.props.currentPoll.options.map(op => {
-      return <option key={'option-' + op.id} value={op.id}>{jMoment(op.startTime, 'YYYY-MM-DDTHH:mm:ss').format('jYYYY/jM/jD HH:mm')} تا {jMoment(op.finishTime, 'YYYY-MM-DDTHH:mm:ss').format('jYYYY/jM/jD HH:mm')} - {op.userList.length} رأی</option>;
-    })
-  };
+  renderTimes = () => this.props.currentPoll.options.map((op) => (
+    <option key={`option-${op.id}`} value={op.id}>
+      {jMoment(op.startTime, 'YYYY-MM-DDTHH:mm:ss').format('jYYYY/jM/jD HH:mm')}
+      {' '}
+تا
+      {' '}
+      {jMoment(op.finishTime, 'YYYY-MM-DDTHH:mm:ss').format('jYYYY/jM/jD HH:mm')}
+      {' '}
+-
+      {' '}
+      {op.userList.length}
+      {' '}
+رأی
+    </option>
+  ));
 
-  renderRooms = () => {
-    return this.props.availableRooms.map(room => {
-      return <option key={'room-' + room} value={room}>{room}</option>;
-    })
-  };
+  renderRooms = () => this.props.availableRooms.map((room) => <option key={`room-${room}`} value={room}>{room}</option>);
 
-  setActiveStep = step => {
+  setActiveStep = (step) => {
     this.setState({ activeStep: step });
   };
 
@@ -193,13 +189,11 @@ class NewMeeting extends Component {
   };
 
   handleSelectRoom = (event) => {
-    this.setState({ room: event.target.value })
+    this.setState({ room: event.target.value });
   };
 
   submitMeeting = () => {
-    const option = this.props.currentPoll.options.find(option => {
-      return parseInt(option.id) === parseInt(this.state.time);
-    });
+    const option = this.props.currentPoll.options.find((option) => parseInt(option.id) === parseInt(this.state.time));
     this.props.createMeeting(this.state.room, option.startTime, option.finishTime, this.state.poll);
   };
 
@@ -207,17 +201,16 @@ class NewMeeting extends Component {
     this.props.cancelMeeting(this.props.meeting.id);
   };
 
-  canStepForward = () => {
-    return (this.state.activeStep === 0 && this.props.currentPoll !== null) ||
-      (this.state.activeStep === 1 && this.props.availableRooms !== []) || (this.state.activeStep === 2 && this.state.poll !== null && this.state.time !== null && this.state.room !== null);
-  };
+  canStepForward = () => (this.state.activeStep === 0 && this.props.currentPoll !== null)
+      || (this.state.activeStep === 1 && this.props.availableRooms !== []) || (this.state.activeStep === 2 && this.state.poll !== null && this.state.time !== null && this.state.room !== null);
 
   render() {
     const steps = this.getSteps();
     return (
       <Paper style={{
         padding: 10,
-      }}>
+      }}
+      >
         <Typography align="center" variant="h4" component="h3">
           ایجاد جلسهٔ جدید
         </Typography>
@@ -267,11 +260,11 @@ class NewMeeting extends Component {
           لغو جلسه
         </Button>
       </Paper>
-    )
+    );
   }
 }
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   polls: state.polls,
   currentPoll: state.currentPoll,
   availableRooms: state.availableRooms,
