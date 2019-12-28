@@ -17,6 +17,7 @@ import {
 import { justEnglishDigits, toEnglishDigits, toPersianDigits } from '../helpers/lang_helper';
 import getPermission from '../selectors/Permission';
 import Comments from './Comments';
+import Paper from "@material-ui/core/Paper";
 
 class ViewPoll extends Component {
   constructor(props) {
@@ -116,7 +117,7 @@ class ViewPoll extends Component {
   };
 
   handleDeleteComment = (commentId) => {
-    this.props.deleteComment(commentId,
+    this.props.deleteComment(commentId, this.props.curr.id,
       () => this.props.fetchPoll(this.props.curr.id));
   };
 
@@ -151,6 +152,9 @@ class ViewPoll extends Component {
       }}
       >
         <h3>{this.props.curr.title}</h3>
+        <Typography component="p">
+          گزینه‌ها:
+        </Typography>
         <div style={{
           display: 'flex',
           flexWrap: 'wrap',
@@ -161,62 +165,64 @@ class ViewPoll extends Component {
         {this.props.permissions.isCurrentUser(this.props.curr.ownerId)
           && (
           <div>
-            <Typography component="p">
-              دعوت افراد جدید:
-            </Typography>
-            <div style={{ display: 'flex', alignItems: 'baseline' }}>
-              <TextField
-                id="user-email"
-                label="ایمیل"
-                value={this.state.email}
-                onChange={this.handleEmailChange}
-              />
-              <Button onClick={this.addParticipant}>
-                دعوت
-              </Button>
-              <TextField
-                id="user-email-remove"
-                label="ایمیل"
-                value={this.state.emailRemove}
-                onChange={this.handleEmailRemoveChange}
-              />
-              <Button onClick={this.removeParticipant}>
-                لغو دعوت
-              </Button>
-            </div>
+            <Paper style={{ padding: 10 }}>
+              <Typography component="p">
+                افراد مدنظر خود را دعوت یا لغو دعوت کنید:
+              </Typography>
+              <div style={{ display: 'flex', alignItems: 'baseline' }}>
+                <TextField
+                  id="user-email"
+                  label="ایمیل"
+                  value={this.state.email}
+                  onChange={this.handleEmailChange}
+                />
+                <Button variant={'contained'} color={'primary'} onClick={this.addParticipant} style={{ margin: '0 5px' }}>
+                  دعوت
+                </Button>
+                <TextField
+                  id="user-email-remove"
+                  label="ایمیل"
+                  value={this.state.emailRemove}
+                  onChange={this.handleEmailRemoveChange}
+                />
+                <Button color={'secondary'} onClick={this.removeParticipant} style={{ margin: '0 5px' }}>
+                  لغو دعوت
+                </Button>
+              </div>
+            </Paper>
             <br />
-            <Typography component="p">
-              افزودن گزینه‌های جدید:
-            </Typography>
-            <div>
-              <p>تاریخ شروع:</p>
-              <MuiPickersUtilsProvider utils={JalaaliUtils} locale="fa">
-                <DateTimePicker
-                  value={this.state.startTime}
-                  onChange={this.handleStartTimeChange}
-                  okLabel="تأیید"
-                  cancelLabel="لغو"
-                  clearLabel="پاک کردن"
-                  labelFunc={(date) => (date ? date.format('jYYYY/jM/jD HH:mm') : '')}
-                />
-              </MuiPickersUtilsProvider>
-            </div>
-            <div>
-              <p>تاریخ پایان:</p>
-              <MuiPickersUtilsProvider utils={JalaaliUtils} locale="fa">
-                <DateTimePicker
-                  value={this.state.finishTime}
-                  onChange={this.handleFinishTimeChange}
-                  okLabel="تأیید"
-                  cancelLabel="لغو"
-                  clearLabel="پاک کردن"
-                  labelFunc={(date) => (date ? date.format('jYYYY/jM/jD HH:mm') : '')}
-                />
-              </MuiPickersUtilsProvider>
-              <Button onClick={this.handleAddTimes}>
-                اضافه‌کردن گزینه
-              </Button>
-            </div>
+            <Paper style={{ padding: 10 }}>
+              <Typography component="p">
+                افزودن گزینه‌های جدید:
+              </Typography>
+              <div style={{ display: 'flex', alignItems: 'baseline' }}>
+                <Typography style={{ margin: 5 }}>تاریخ شروع:</Typography>
+                <MuiPickersUtilsProvider utils={JalaaliUtils} locale="fa">
+                  <DateTimePicker
+                    value={this.state.startTime}
+                    onChange={this.handleStartTimeChange}
+                    okLabel="تأیید"
+                    cancelLabel="لغو"
+                    clearLabel="پاک کردن"
+                    labelFunc={(date) => (date ? date.format('jYYYY/jM/jD HH:mm') : '')}
+                  />
+                </MuiPickersUtilsProvider>
+                <Typography style={{ margin: 5 }}>تاریخ پایان:</Typography>
+                <MuiPickersUtilsProvider utils={JalaaliUtils} locale="fa">
+                  <DateTimePicker
+                    value={this.state.finishTime}
+                    onChange={this.handleFinishTimeChange}
+                    okLabel="تأیید"
+                    cancelLabel="لغو"
+                    clearLabel="پاک کردن"
+                    labelFunc={(date) => (date ? date.format('jYYYY/jM/jD HH:mm') : '')}
+                  />
+                </MuiPickersUtilsProvider>
+                <Button variant={'contained'} color={'primary'} style={{ margin: 5 }} onClick={this.handleAddTimes}>
+                  اضافه‌کردن گزینه
+                </Button>
+              </div>
+            </Paper>
           </div>
           )}
         <Comments

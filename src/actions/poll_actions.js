@@ -123,10 +123,10 @@ export function addComment(data, cb) {
   };
 }
 
-export function deleteComment(commentId, cb) {
+export function deleteComment(commentId, pollId, cb) {
   return (dispatch) => {
-    axios.post(`${url}/poll/removeComment`,
-      { commentId })
+    axios.post(`${url}/poll/deleteComment`,
+      { commentId, pollId })
       .then((res) => {
         cb();
         toast.success('نظر با موفقیت حذف شد');

@@ -29,7 +29,7 @@ class ViewMeeting extends Component {
         <h3>{this.props.curr.title}</h3>
         <p>شماره اتاق: {this.props.curr.roomNumber}</p>
         <p>زمان برگزاری: از {toPersianDigits(jMoment(this.props.curr.startTime, 'YYYY-MM-DDTHH:mm:ss').format('jYYYY/jM/jD HH:mm'))} تا {toPersianDigits(jMoment(this.props.curr.finishTime, 'YYYY-MM-DDTHH:mm:ss').format('jYYYY/jM/jD HH:mm'))}</p>
-        <Button disabled={this.props.curr.status === 'CANCELLED'} onClick={this.cancelMeeting}>
+        <Button color={'secondary'} disabled={this.props.curr.status === 'CANCELLED'} onClick={this.cancelMeeting}>
           لغو جلسه
         </Button>
       </div>
