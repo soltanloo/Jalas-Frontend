@@ -7,6 +7,7 @@ import currentMeetingReducer from './current_meeting_reducer';
 import currentPollReducer from './current_poll_reducer';
 import authReducer from './auth_reducer';
 import meetingsReducer from './meetings_reducer';
+import analyticReducer from './analytic_reducer';
 
 const rootReducer = combineReducers({
   form: formReducer,
@@ -17,6 +18,7 @@ const rootReducer = combineReducers({
   meeting: meetingReducer,
   currentMeeting: currentMeetingReducer,
   auth: authReducer,
+  analytics: analyticReducer,
 });
 
 export default rootReducer;

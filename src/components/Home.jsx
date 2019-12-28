@@ -11,6 +11,7 @@ export default class Home extends Component {
   };
 
   render() {
+    const { isAdmin, isProductOwner } = this.props;
     return (
       <div className="App">
         <header className="App-header">
@@ -39,6 +40,16 @@ export default class Home extends Component {
               <Button component={Link} to="/polls" variant="contained" style={{ margin: 5 }}>
                 نظرسنجی‌های من
               </Button>
+              {isAdmin &&
+              <Button component={Link} to="/metrics" variant="contained" style={{ margin: 5 }}>
+                پنل ادمین
+              </Button>
+              }
+              {isProductOwner &&
+              <Button component={Link} to="/performance" variant="contained" style={{ margin: 5 }}>
+                پنل مدیر محصول
+              </Button>
+              }
             </div>
           }
         </header>

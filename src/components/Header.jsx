@@ -8,7 +8,7 @@ import { logout } from '../actions/auth_actions';
 
 class Header extends Component {
   render() {
-    const { isLoggedIn } = this.props;
+    const { isLoggedIn, isAdmin, isProductOwner } = this.props;
     return (
       <Paper style={{ padding: 10 }}>
         <div style={{ display: 'flex' }}>
@@ -32,6 +32,16 @@ class Header extends Component {
                 <Button component={Link} to="/polls" variant="contained" style={{ margin: 5 }}>
             نظرسنجی‌های من
                 </Button>
+                {isAdmin &&
+                  <Button component={Link} to="/metrics" variant="contained" style={{ margin: 5 }}>
+                    پنل ادمین
+                  </Button>
+                }
+                {isProductOwner &&
+                  <Button component={Link} to="/performance" variant="contained" style={{ margin: 5 }}>
+                    پنل مدیر محصول
+                  </Button>
+                }
                 <Button component={Link} to="/" onClick={() => this.props.logout()} color="secondary" style={{ margin: '5' }}>
                   خروج
                 </Button>
