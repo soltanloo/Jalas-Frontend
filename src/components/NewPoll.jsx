@@ -30,6 +30,7 @@ class NewPoll extends Component {
     super(props);
     this.state = {
       ...initialState,
+      entryTime: new Date(),
     };
   }
 
@@ -196,6 +197,7 @@ class NewPoll extends Component {
     this.props.createPoll({
       // userID: this.state.userID,
       title: this.state.title,
+      creationTime: moment(new Date()).diff(this.state.entryTime),
       options: this.state.options.map((option) => ({
         startTime: moment(option.startTime).format('YYYY-MM-DDTHH:mm:ss'),
         finishTime: moment(option.finishTime).format('YYYY-MM-DDTHH:mm:ss'),

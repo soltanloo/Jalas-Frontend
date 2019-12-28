@@ -6,11 +6,11 @@ const CREATE_MEETING_SUCCESS = 'CREATE_MEETING_SUCCESS';
 const FETCH_MEETING = 'FETCH_MEETING';
 const FETCH_MEETINGS = 'FETCH_MEETINGS';
 
-export function createMeeting(roomId, from, to, pollId) {
+export function createMeeting(roomId, from, to, pollId, creationTime) {
   return (dispatch) => {
     axios.post(`${Config.baseURL}/addMeeting`,
       {
-        roomNumber: roomId, startTime: from, finishTime: to, pollId,
+        roomNumber: roomId, startTime: from, finishTime: to, pollId, creationTime
       })
       .then((res) => {
         toast.success('جلسه با موفقیت ثبت شد');

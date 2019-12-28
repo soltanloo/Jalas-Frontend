@@ -30,6 +30,7 @@ class NewMeeting extends Component {
     super(props);
     this.state = {
       ...initialState,
+      entryTime: new Date(),
     };
   }
 
@@ -199,7 +200,7 @@ class NewMeeting extends Component {
     const option = this.props.currentPoll.options.find(option => {
       return parseInt(option.id) === parseInt(this.state.time);
     });
-    this.props.createMeeting(this.state.room, option.startTime, option.finishTime, this.state.poll);
+    this.props.createMeeting(this.state.room, option.startTime, option.finishTime, this.state.poll, moment(new Date()).diff(this.state.entryTime));
   };
 
   cancelMeeting = () => {
