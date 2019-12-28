@@ -19,9 +19,9 @@ export function login(credentials, callback) {
       toast.success('ورود با موفقیت انجام شد');
       dispatch({
         type: LOGIN_SUCCESS,
-        user: jwt_decode(localStorage.authToken).userId,
+        userId: jwt_decode(localStorage.authToken).userId,
+        userRole: jwt_decode(localStorage.authToken).role,
       });
-      // callback();
     }).catch((error) => {
       dispatch({
         type: LOGIN_FAILURE,
@@ -42,7 +42,8 @@ export function fetchUser(token) {
   return (dispatch) => {
     dispatch({
       type: LOGIN_SUCCESS,
-      user: jwt_decode(localStorage.authToken).userId,
+      userId: jwt_decode(localStorage.authToken).userId,
+      userRole: jwt_decode(localStorage.authToken).role,
     });
   };
 }

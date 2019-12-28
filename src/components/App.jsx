@@ -22,6 +22,9 @@ import ViewPolls from './ViewPolls';
 import ViewMeetings from './ViewMeetings';
 import PrivateRoute from './PrivateRoute';
 import Header from './Header';
+import getPermission from '../selectors/Permission';
+import PerformancePanel from "./PerformancePanel";
+import AdminPanel from "./AdminPanel";
 
 axios.defaults.baseURL = Config.baseURL;
 axios.defaults.headers.post['Content-Type'] = 'application/json; charset=utf-8';
@@ -29,6 +32,12 @@ axios.defaults.headers.put['Content-Type'] = 'application/json; charset=utf-8';
 axios.defaults.headers.common['filter-type'] = 'local';
 
 class App extends React.Component {
+  constructor(props) {
+    super(props);
+    const authToken = localStorage.getItem('authToken');
+    if (authToken) axios.defaults.headers.common['user-token'] = `${authToken}`;
+  }
+
   componentDidUpdate(prevProps, prevState, snapshot) {
     const authToken = localStorage.getItem('authToken');
     if (authToken) axios.defaults.headers.common['user-token'] = `${authToken}`;
@@ -44,9 +53,25 @@ class App extends React.Component {
     return (
       <Router>
         <ToastContainer rtl toastClassName={'custom-toast'} />
-        <Route path="/" render={(props) => (props.location.pathname !== '/') && <Header isLoggedIn={!!this.props.isLoggedIn} />} />
+        <Route
+          path="/"
+          render={(props) => (props.location.pathname !== '/')
+            && (
+            <Header
+              isAdmin={this.props.permissions.isAdmin()}
+              isProductOwner={this.props.permissions.isProductOwner()}
+              isLoggedIn={!!this.props.isLoggedIn}
+            />
+            )}
+        />
         <Switch>
-          <Route exact path="/" render={(props) => <Home isLoggedIn={localStorage.authToken} {...props} />} />
+          <Route exact path="/" render={(props) => <Home
+              isLoggedIn={localStorage.authToken}
+              {...props}
+              isAdmin={this.props.permissions.isAdmin()}
+              isProductOwner={this.props.permissions.isProductOwner()}
+            />}
+          />
           <Route
             exact
             path="/login"
@@ -58,6 +83,8 @@ class App extends React.Component {
           <PrivateRoute isLoggedIn={localStorage.authToken} path="/new-poll" component={NewPoll} />
           <PrivateRoute isLoggedIn={localStorage.authToken} path={'/polls'} component={ViewPolls} />
           <PrivateRoute isLoggedIn={localStorage.authToken} path={'/poll/:id'} component={ViewPoll} />
+          <PrivateRoute isLoggedIn={localStorage.authToken} path={'/performance'} component={PerformancePanel} />
+          <PrivateRoute isLoggedIn={localStorage.authToken} path={'/metrics'} component={AdminPanel} />
         </Switch>
       </Router>
     );
@@ -65,7 +92,8 @@ class App extends React.Component {
 }
 
 const mapStateToProps = (state) => ({
-  isLoggedIn: state.auth.user,
+  isLoggedIn: state.auth.userId,
+  permissions: getPermission(state),
 });
 
 const mapDispatchToProps = {

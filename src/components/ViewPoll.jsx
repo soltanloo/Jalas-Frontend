@@ -245,7 +245,7 @@ ViewPoll.propTypes = {
 const mapStateToProps = (state) => ({
   curr: state.currentPoll,
   permissions: getPermission(state),
-  userId: state.auth.user,
+  userId: state.auth.userId,
 });
 
 const mapDispatchToProps = {

@@ -31,7 +31,7 @@ class LoginForm extends Component {
   );
 
   render() {
-    if (this.props.auth.user) {
+    if (this.props.auth.userId) {
       return <Redirect to="/" />;
     }
     const { handleSubmit } = this.props;

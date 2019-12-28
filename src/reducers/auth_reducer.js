@@ -6,7 +6,8 @@ const LOGOUT = 'LOGOUT';
 
 const initialState = {
   isAuthenticating: false,
-  user: null,
+  userId: null,
+  userRole: null,
   errorMessage: null,
 };
 
@@ -24,12 +25,13 @@ export default function (state = initialState, action = {}) {
         errorMessage: action.errorMessage,
       };
     case LOGIN_SUCCESS:
-      return { ...state, user: action.user };
+      return { ...state, userId: action.userId, userRole: action.userRole };
     case LOGOUT:
       return {
         ...state,
         isAuthenticating: false,
-        user: null,
+        userId: null,
+        userRole: null,
         errorMessage: null,
       };
     case REGISTER_FAILURE:
