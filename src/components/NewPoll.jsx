@@ -13,6 +13,7 @@ import TextField from '@material-ui/core/TextField';
 import moment from 'moment';
 import { toPersianDigits } from '../helpers/lang_helper';
 import { createPoll, inviteToPoll, removeFromPoll } from '../actions/poll_actions';
+import Divider from '@material-ui/core/Divider';
 
 const initialState = {
   title: '',
@@ -81,13 +82,13 @@ class NewPoll extends Component {
     this.props.removeFromPoll(this.state.emailRemove, this.state.pollId, this.state.userID);
   };
 
-  renderOptions = () => this.state.options.map((option) => (
-    <li>
+  renderOptions = () => this.state.options.map((option, index) => (
+    <li key={`option-${index}`}>
       {jMoment(option.startTime).format('jYYYY/jM/jD HH:mm')}
       {' '}
 تا
       {jMoment(option.finishTime).format('jYYYY/jM/jD HH:mm')}
-      <Button onClick={() => this.handleDeleteOption(option)}>
+      <Button color={'secondary'} onClick={() => this.handleDeleteOption(option)}>
             حذف
       </Button>
     </li>
@@ -115,8 +116,8 @@ class NewPoll extends Component {
             <Typography component="p">
               گزینه‌های نظرسنجی را مشخص کنید:
             </Typography>
-            <div>
-              <p>تاریخ شروع:</p>
+            <div style={{ display: 'flex', alignItems: 'baseline' }}>
+              <Typography style={{ margin: 5 }}>تاریخ شروع:</Typography>
               <MuiPickersUtilsProvider utils={JalaaliUtils} locale="fa">
                 <DateTimePicker
                   value={this.state.startTime}
@@ -127,9 +128,7 @@ class NewPoll extends Component {
                   labelFunc={(date) => (date ? date.format('jYYYY/jM/jD HH:mm') : '')}
                 />
               </MuiPickersUtilsProvider>
-            </div>
-            <div>
-              <p>تاریخ پایان:</p>
+              <Typography style={{ margin: 5 }}>تاریخ پایان:</Typography>
               <MuiPickersUtilsProvider utils={JalaaliUtils} locale="fa">
                 <DateTimePicker
                   value={this.state.finishTime}
@@ -140,9 +139,11 @@ class NewPoll extends Component {
                   labelFunc={(date) => (date ? date.format('jYYYY/jM/jD HH:mm') : '')}
                 />
               </MuiPickersUtilsProvider>
-              <Button onClick={this.handleAddTimes}>
+              <Button variant={'contained'} color={'primary'} onClick={this.handleAddTimes} style={{ margin: 5 }}>
                 اضافه‌کردن گزینه
               </Button>
+            </div>
+            <div>
               <Typography component="p">
                 گزینه‌های نظرسنجی:
               </Typography>
@@ -156,7 +157,7 @@ class NewPoll extends Component {
         return (
           <>
             <Typography component="p">
-              افراد مدنظر خود را دعوت کنید:
+              افراد مدنظر خود را دعوت یا لغو دعوت کنید:
             </Typography>
             <div style={{ display: 'flex', alignItems: 'baseline' }}>
               <TextField
@@ -168,16 +169,13 @@ class NewPoll extends Component {
               <Button onClick={this.addParticipant}>
                 دعوت
               </Button>
-              <Typography component="p">
-                افراد مدنظر خود را حذف کنید:
-              </Typography>
               <TextField
                 id="user-email-remove"
                 label="ایمیل"
                 value={this.state.emailRemove}
                 onChange={this.handleEmailRemoveChange}
               />
-              <Button onClick={this.removeParticipant}>
+              <Button color={'secondary'} onClick={this.removeParticipant}>
                 لغو دعوت
               </Button>
             </div>
@@ -253,6 +251,7 @@ class NewPoll extends Component {
             ) : (
               <div>
                 {this.getStepContent(this.state.activeStep)}
+                <Divider variant="middle" style={{ margin: '10px 0' }} />
                 <div>
                   <Button
                     disabled={this.state.activeStep === 0}

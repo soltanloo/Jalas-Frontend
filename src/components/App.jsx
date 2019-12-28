@@ -19,16 +19,21 @@ import ViewPoll from './ViewPoll';
 import Config from '../config/config';
 import AuthPage from './auth/AuthPage';
 import ViewPolls from './ViewPolls';
-import ViewMeetings from "./ViewMeetings";
+import ViewMeetings from './ViewMeetings';
+import PrivateRoute from './PrivateRoute';
+import Header from './Header';
 
 axios.defaults.baseURL = Config.baseURL;
 axios.defaults.headers.post['Content-Type'] = 'application/json; charset=utf-8';
 axios.defaults.headers.put['Content-Type'] = 'application/json; charset=utf-8';
-
-const authToken = localStorage.getItem('authToken');
-if (authToken) axios.defaults.headers.common['user-token'] = `${authToken}`;
 axios.defaults.headers.common['filter-type'] = 'local';
+
 class App extends React.Component {
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    const authToken = localStorage.getItem('authToken');
+    if (authToken) axios.defaults.headers.common['user-token'] = `${authToken}`;
+  }
+
   componentDidMount() {
     if (localStorage.authToken) {
       this.props.fetchUser(localStorage.authToken);
@@ -39,41 +44,32 @@ class App extends React.Component {
     return (
       <Router>
         <ToastContainer rtl toastClassName={'custom-toast'} />
-        <div>
-          {/* <nav>
-          <ul>
-            <li>
-              <Link to="/">Home</Link>
-            </li>
-            <li>
-              <Link to="/about">About</Link>
-            </li>
-            <li>
-              <Link to="/users">Users</Link>
-            </li>
-          </ul>
-        </nav> */}
-          <Switch>
-            <Route path="/new-meeting" component={NewMeeting} />
-            <Route path={'/meetings'} component={ViewMeetings} />
-            <Route path={'/meeting/:id'} component={ViewMeeting} />
-            <Route path="/new-poll" component={NewPoll} />
-            <Route path={'/polls'} component={ViewPolls} />
-            <Route path={'/poll/:id'} component={ViewPoll} />
-            <Route
-              path="/login"
-              render={(props) => (<AuthPage mode={'login'} {...props} />)}
-            />
-            <Route path="/" component={Home} />
-          </Switch>
-        </div>
+        <Route path="/" render={(props) => (props.location.pathname !== '/') && <Header isLoggedIn={!!this.props.isLoggedIn} />} />
+        <Switch>
+          <Route exact path="/" render={(props) => <Home isLoggedIn={localStorage.authToken} {...props} />} />
+          <Route
+            exact
+            path="/login"
+            render={(props) => (<AuthPage mode={'login'} {...props} />)}
+          />
+          <PrivateRoute isLoggedIn={localStorage.authToken} path="/new-meeting" component={NewMeeting} />
+          <PrivateRoute isLoggedIn={localStorage.authToken} path={'/meetings'} component={ViewMeetings} />
+          <PrivateRoute isLoggedIn={localStorage.authToken} path={'/meeting/:id'} component={ViewMeeting} />
+          <PrivateRoute isLoggedIn={localStorage.authToken} path="/new-poll" component={NewPoll} />
+          <PrivateRoute isLoggedIn={localStorage.authToken} path={'/polls'} component={ViewPolls} />
+          <PrivateRoute isLoggedIn={localStorage.authToken} path={'/poll/:id'} component={ViewPoll} />
+        </Switch>
       </Router>
     );
   }
 }
 
+const mapStateToProps = (state) => ({
+  isLoggedIn: state.auth.user,
+});
+
 const mapDispatchToProps = {
   fetchUser,
 };
 
-export default connect(null, mapDispatchToProps)(App);
+export default connect(mapStateToProps, mapDispatchToProps)(App);

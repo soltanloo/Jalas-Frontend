@@ -23,12 +23,12 @@ const createStoreWithMiddleware = composeWithDevTools(applyMiddleware(thunk))(cr
 axios.interceptors.response.use(undefined, (error) => {
   if (error.response && error.response.status) {
     if (error.response.status === 401) {
-      localStorage.removeItem('authToken');
+      // localStorage.removeItem('authToken');
       toast.warn('لطفاً ابتدا وارد حساب کاربری خود شوید');
       return Promise.reject(error);
     }
     if (error.response.status === 403) {
-      localStorage.removeItem('authToken');
+      // localStorage.removeItem('authToken');
       toast.warn('لطفاً مجدداً وارد حساب کاربری خود شوید');
       return Promise.reject(error);
     }
