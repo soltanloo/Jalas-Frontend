@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { fetchMetrics } from '../actions/analytic_actions';
+import Paper from "@material-ui/core/Paper";
+import Typography from "@material-ui/core/Typography";
 
 class AdminPanel extends Component {
   componentDidMount() {
@@ -8,16 +10,35 @@ class AdminPanel extends Component {
   }
 
   render() {
+    const {
+      reservedRoomsNum,
+      usersNum,
+      meetingsNum,
+      pollsNum,
+      canceledMeetingsNum,
+      commentsNum,
+    } = this.props.data;
     return (
-      <div>
-        {Object.keys(this.props.data).map((obj, i) => {
-          return (
-            <div>
-              {obj}: {this.props.data[obj]}
-            </div>
-          )})
-        }
-      </div>
+      <Paper style={{ padding: 10 }}>
+        <Typography>
+          تعداد کاربران: {usersNum}
+        </Typography>
+        <Typography>
+          تعداد جلسات ایجادشده: {meetingsNum}
+        </Typography>
+        <Typography>
+          تعداد نظرسنجی‌های ایجادشده: {pollsNum}
+        </Typography>
+        <Typography>
+          تعداد نظرها: {commentsNum}
+        </Typography>
+        <Typography>
+          تعداد جلسات لغوشده: {canceledMeetingsNum}
+        </Typography>
+        <Typography>
+          تعداد اتاق‌های رزروشده: {reservedRoomsNum}
+        </Typography>
+      </Paper>
     );
   }
 }
