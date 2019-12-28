@@ -40,6 +40,7 @@ class LoginForm extends Component {
         style={{
           padding: 10,
           width: 'fit-content',
+          minWidth: '300px',
           margin: '10px auto',
         }}
       >
@@ -49,16 +50,37 @@ class LoginForm extends Component {
         <div>
           <form onSubmit={handleSubmit(this.onSubmit.bind(this))}>
             <div>
-              <Field name="email" required type="email" id="email" label="رایانامه" component={this.renderField} />
+              <Field
+                fullWidth
+                name="email"
+                required
+                type="email"
+                id="email"
+                label="رایانامه"
+                component={this.renderField}
+              />
             </div>
             <div>
-              <Field name="password" required type="password" id="password" label="گذرواژه" component={this.renderField} />
+              <Field
+                fullWidth
+                name="password"
+                required
+                type="password"
+                id="password"
+                label="گذرواژه"
+                component={this.renderField}
+              />
             </div>
             <div>
               {this.props.auth.errorMessage}
             </div>
-            <div style={{ display: 'flex', justifyContent: 'center' }}>
-              <Button type="submit" disabled={this.props.auth.isAuthenticating}>
+            <div style={{ display: 'flex', justifyContent: 'center', marginTop: 10 }}>
+              <Button
+                variant="contained"
+                color="primary"
+                type="submit"
+                disabled={this.props.auth.isAuthenticating}
+              >
                 {this.props.auth.isAuthenticating ? 'در حال ورود' : 'وارد شو'}
               </Button>
             </div>

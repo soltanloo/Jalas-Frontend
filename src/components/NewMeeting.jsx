@@ -17,6 +17,7 @@ import { cancelMeeting, createMeeting } from "../actions/meeting_actions";
 import jMoment from 'moment-jalaali';
 import IconButton from "@material-ui/core/IconButton";
 import RefreshIcon from '@material-ui/icons/Refresh';
+import Divider from "@material-ui/core/Divider";
 
 const initialState = {
   time: '',
@@ -237,6 +238,7 @@ class NewMeeting extends Component {
             ) : (
               <div>
                 {this.getStepContent(this.state.activeStep)}
+                <Divider variant="middle" style={{ margin: '10px 0' }} />
                 <div>
                   <Button
                     disabled={this.state.activeStep === 0}
@@ -261,7 +263,7 @@ class NewMeeting extends Component {
         <Button onClick={this.submitMeeting} variant="contained" color="primary">
           ایجاد جلسه
         </Button>
-        <Button onClick={this.cancelMeeting}>
+        <Button color={'secondary'} onClick={this.cancelMeeting}>
           لغو جلسه
         </Button>
       </Paper>
