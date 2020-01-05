@@ -11,13 +11,13 @@ import { DateTimePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
 import JalaaliUtils from '@date-io/jalaali';
 import moment from 'moment';
 import TextField from '@material-ui/core/TextField';
+import Paper from '@material-ui/core/Paper';
 import {
   addOption, fetchPoll, removeOption, vote, addComment, deleteComment, inviteToPoll, removeFromPoll,
 } from '../actions/poll_actions';
 import { justEnglishDigits, toEnglishDigits, toPersianDigits } from '../helpers/lang_helper';
 import getPermission from '../selectors/Permission';
 import Comments from './Comments';
-import Paper from "@material-ui/core/Paper";
 
 class ViewPoll extends Component {
   constructor(props) {
@@ -230,7 +230,8 @@ class ViewPoll extends Component {
           onSubmitComment={this.handleSubmitComment}
           onDeleteComment={this.handleDeleteComment}
           onSubmitReply={this.handleSubmitReply}
-          hasPermToDelete={(commenterId) => this.props.permissions.isCurrentUser(commenterId)}
+          hasPermToDelete={(commenterId) => this.props.permissions.isCurrentUser(commenterId)
+            || this.props.permissions.isCurrentUser(this.props.curr.ownerId)}
         />
       </div>
     );
