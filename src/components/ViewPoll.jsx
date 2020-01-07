@@ -13,7 +13,7 @@ import moment from 'moment';
 import TextField from '@material-ui/core/TextField';
 import Paper from '@material-ui/core/Paper';
 import {
-  addOption, fetchPoll, removeOption, vote, addComment, deleteComment, inviteToPoll, removeFromPoll,
+  addOption, fetchPoll, removeOption, vote, addComment, deleteComment, inviteToPoll, removeFromPoll, editComment,
 } from '../actions/poll_actions';
 import { justEnglishDigits, toEnglishDigits, toPersianDigits } from '../helpers/lang_helper';
 import getPermission from '../selectors/Permission';
@@ -114,6 +114,10 @@ class ViewPoll extends Component {
       text,
       repliedCommentId: parentId,
     }, () => this.props.fetchPoll(this.props.curr.id));
+  };
+
+  handleEditComment = (data) => {
+    this.props.editComment({ ...data, pollId: this.props.curr.id }, () => this.props.fetchPoll(this.props.curr.id));
   };
 
   handleDeleteComment = (commentId) => {
@@ -229,8 +233,11 @@ class ViewPoll extends Component {
           comments={this.props.curr.comments}
           onSubmitComment={this.handleSubmitComment}
           onDeleteComment={this.handleDeleteComment}
+          onEditComment={this.handleEditComment}
           onSubmitReply={this.handleSubmitReply}
           hasPermToDelete={(commenterId) => this.props.permissions.isCurrentUser(commenterId)
+            || this.props.permissions.isCurrentUser(this.props.curr.ownerId)}
+          hasPermToEdit={(commenterId) => this.props.permissions.isCurrentUser(commenterId)
             || this.props.permissions.isCurrentUser(this.props.curr.ownerId)}
         />
       </div>
@@ -258,6 +265,7 @@ const mapDispatchToProps = {
   deleteComment,
   inviteToPoll,
   removeFromPoll,
+  editComment,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(ViewPoll);

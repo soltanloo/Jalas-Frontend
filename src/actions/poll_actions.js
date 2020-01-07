@@ -136,3 +136,17 @@ export function deleteComment(commentId, pollId, cb) {
       });
   };
 }
+
+export function editComment(data, cb) {
+  return (dispatch) => {
+    axios.post(`${url}/poll/editComment`,
+      data)
+      .then((res) => {
+        cb();
+        toast.success('نظر با موفقیت ویرایش شد');
+      })
+      .catch((err) => {
+        toast.error('ویرایش نظر با خطا مواجه شد');
+      });
+  };
+}

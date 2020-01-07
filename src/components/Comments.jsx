@@ -10,14 +10,23 @@ import CardActions from '@material-ui/core/CardActions';
 import Typography from '@material-ui/core/Typography';
 import TextField from '@material-ui/core/TextField';
 import Collapse from '@material-ui/core/Collapse';
+import Dialog from '@material-ui/core/Dialog';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogActions from '@material-ui/core/DialogActions';
 
 class Comments extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      openEditDialog: false,
       commentText: '',
       replies: {},
       expanded: {},
+      editing: {
+        value: '',
+        id: undefined,
+      },
     };
   }
 
@@ -28,12 +37,29 @@ class Comments extends Component {
 
   handleSubmitReply = (parentId) => {
     this.props.onSubmitReply(parentId, this.state.replies[parentId]);
-    this.setState({ expanded: { ...this.state.expanded, [parentId]: false }, replies: { ...this.state.replies, [parentId]: '' } })
+    this.setState({ expanded: { ...this.state.expanded, [parentId]: false }, replies: { ...this.state.replies, [parentId]: '' } });
   };
 
   handleChangeReply = (parentId, event) => {
     const { replies } = this.state;
     this.setState({ replies: { ...replies, [parentId]: event.target.value } });
+  };
+
+  handleEditComment = (event) => {
+    this.setState({ editing: { ...this.state.editing, value: event.target.value } });
+  };
+
+  handleCloseEditDialog = () => {
+    this.setState({ openEditDialog: false, editing: { value: '', id: undefined } });
+  };
+
+  handleOpenEditDialog = (commentId, commentText) => {
+    this.setState({ openEditDialog: true, editing: { value: commentText, id: commentId } });
+  };
+
+  handleSubmitEdit = () => {
+    this.handleCloseEditDialog();
+    this.props.onEditComment({ text: this.state.editing.value, commentId: this.state.editing.id });
   };
 
   renderComment = (comment) => (
@@ -72,6 +98,16 @@ class Comments extends Component {
             حذف
           </Button>
           )}
+        {this.props.hasPermToEdit(comment.commenterId)
+        && (
+          <Button
+            size="small"
+            color="primary"
+            onClick={() => this.handleOpenEditDialog(comment.id, comment.containingText)}
+          >
+            ویرایش
+          </Button>
+        )}
       </CardActions>
       <Collapse in={this.state.expanded[comment.id] ? this.state.expanded[comment.id] : false} timeout="auto" unmountOnExit>
         <CardContent>
@@ -129,6 +165,30 @@ class Comments extends Component {
               </Button>
             </CardActions>
           </Card>
+          <Dialog open={this.state.openEditDialog} onClose={this.handleCloseEditDialog}>
+            <DialogTitle id="form-dialog-title">ویرایش نظر</DialogTitle>
+            <DialogContent>
+              <TextField
+                value={this.state.editing.value}
+                multiline
+                autoFocus
+                margin="dense"
+                id="comment-edit"
+                label="متن نظر"
+                type="text"
+                fullWidth
+                onChange={(event) => this.handleEditComment(event)}
+              />
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={this.handleCloseEditDialog}>
+                لغو
+              </Button>
+              <Button onClick={this.handleSubmitEdit} color="primary">
+                ثبت
+              </Button>
+            </DialogActions>
+          </Dialog>
         </div>
       </div>
     );
