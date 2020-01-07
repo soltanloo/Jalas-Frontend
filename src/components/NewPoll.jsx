@@ -28,6 +28,7 @@ const initialState = {
   deadline: new Date(),
   activeStep: 0,
   shouldAutoSet: false,
+  hasDeadline: false,
 };
 
 class NewPoll extends Component {
@@ -55,6 +56,10 @@ class NewPoll extends Component {
 
   handleChangeShouldAutoSet = (event) => {
     this.setState({ shouldAutoSet: event.target.checked })
+  };
+
+  handleChangeHasDeadline = (event) => {
+    this.setState({ hasDeadline: event.target.checked })
   };
 
   handleFinishTimeChange = (date) => {
@@ -125,14 +130,14 @@ class NewPoll extends Component {
             <FormControlLabel
               control={(
                 <Checkbox
-                  checked={this.state.shouldAutoSet}
-                  onChange={this.handleChangeShouldAutoSet}
+                  checked={this.state.hasDeadline}
+                  onChange={this.handleChangeHasDeadline}
                   value="primary"
                 />
               )}
-              label="بستن خودکار نظرسنجی پس از ضرب‌الأجل"
+              label="تعیین ضرب‌الأجل"
             />
-            {this.state.shouldAutoSet
+            {this.state.hasDeadline
             && (
               <MuiPickersUtilsProvider utils={JalaaliUtils} locale="fa">
                 <DateTimePicker
@@ -145,6 +150,19 @@ class NewPoll extends Component {
                 />
               </MuiPickersUtilsProvider>
             )}
+              {this.state.hasDeadline
+              && (
+                <FormControlLabel
+                  control={(
+                    <Checkbox
+                      checked={this.state.shouldAutoSet}
+                      onChange={this.handleChangeShouldAutoSet}
+                      value="primary"
+                    />
+                  )}
+                  label="نهایی‌سازی خودکار جلسه پس از ضرب‌الأجل"
+                />
+              )}
             </div>
           </>
         );
@@ -237,8 +255,8 @@ class NewPoll extends Component {
         startTime: moment(option.startTime).format('YYYY-MM-DDTHH:mm:ss'),
         finishTime: moment(option.finishTime).format('YYYY-MM-DDTHH:mm:ss'),
       })),
-      shouldAutoSet: this.state.shouldAutoSet ? 1 : 0,
-      deadline: this.state.shouldAutoSet ? moment(this.state.deadline).format('YYYY-MM-DDTHH:mm:ss') : null,
+      shouldAutoSet: this.state.hasDeadline && this.state.shouldAutoSet ? 1 : 0,
+      deadline: this.state.hasDeadline ? moment(this.state.deadline).format('YYYY-MM-DDTHH:mm:ss') : undefined,
     }).then((res) => {
       this.setState({ pollId: res.data });
     }).catch((err) => {
