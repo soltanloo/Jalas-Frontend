@@ -11,9 +11,11 @@ import JalaaliUtils from '@date-io/jalaali';
 import jMoment from 'moment-jalaali';
 import TextField from '@material-ui/core/TextField';
 import moment from 'moment';
-import { toPersianDigits } from '../helpers/lang_helper';
-import { createPoll, inviteToPoll, removeFromPoll } from '../actions/poll_actions';
 import Divider from '@material-ui/core/Divider';
+import Checkbox from '@material-ui/core/Checkbox';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import { createPoll, inviteToPoll, removeFromPoll } from '../actions/poll_actions';
+import { toPersianDigits } from '../helpers/lang_helper';
 
 const initialState = {
   title: '',
@@ -23,7 +25,9 @@ const initialState = {
   options: [],
   startTime: new Date(),
   finishTime: new Date(),
+  deadline: new Date(),
   activeStep: 0,
+  shouldAutoSet: false,
 };
 
 class NewPoll extends Component {
@@ -43,6 +47,14 @@ class NewPoll extends Component {
 
   handleStartTimeChange = (date) => {
     this.setState({ startTime: date });
+  };
+
+  handleDeadlineChange = (date) => {
+    this.setState({ deadline: date });
+  };
+
+  handleChangeShouldAutoSet = (event) => {
+    this.setState({ shouldAutoSet: event.target.checked })
   };
 
   handleFinishTimeChange = (date) => {
@@ -109,6 +121,31 @@ class NewPoll extends Component {
               value={this.state.title}
               onChange={this.handleTitleChange}
             />
+            <div>
+            <FormControlLabel
+              control={(
+                <Checkbox
+                  checked={this.state.shouldAutoSet}
+                  onChange={this.handleChangeShouldAutoSet}
+                  value="primary"
+                />
+              )}
+              label="بستن خودکار نظرسنجی پس از ضرب‌الأجل"
+            />
+            {this.state.shouldAutoSet
+            && (
+              <MuiPickersUtilsProvider utils={JalaaliUtils} locale="fa">
+                <DateTimePicker
+                  value={this.state.deadline}
+                  onChange={this.handleDeadlineChange}
+                  okLabel="تأیید"
+                  cancelLabel="لغو"
+                  clearLabel="پاک کردن"
+                  labelFunc={(date) => (date ? date.format('jYYYY/jM/jD HH:mm') : '')}
+                />
+              </MuiPickersUtilsProvider>
+            )}
+            </div>
           </>
         );
       case 1:
@@ -200,6 +237,8 @@ class NewPoll extends Component {
         startTime: moment(option.startTime).format('YYYY-MM-DDTHH:mm:ss'),
         finishTime: moment(option.finishTime).format('YYYY-MM-DDTHH:mm:ss'),
       })),
+      shouldAutoSet: this.state.shouldAutoSet ? 1 : 0,
+      deadline: this.state.shouldAutoSet ? moment(this.state.deadline).format('YYYY-MM-DDTHH:mm:ss') : null,
     }).then((res) => {
       this.setState({ pollId: res.data });
     }).catch((err) => {
