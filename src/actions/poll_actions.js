@@ -150,3 +150,17 @@ export function editComment(data, cb) {
       });
   };
 }
+
+export function closePoll(pollId, cb) {
+  return (dispatch) => {
+    axios.post(`${url}/poll/${pollId}/close`)
+      .then((res) => {
+        cb();
+        toast.success('نظرسنجی با موفقیت بسته شد');
+      })
+      .catch((err) => {
+        console.log(err)
+        toast.error('بستن نظرسنجی با خطا مواجه شد');
+      });
+  };
+}

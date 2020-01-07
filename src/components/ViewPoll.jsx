@@ -13,7 +13,16 @@ import moment from 'moment';
 import TextField from '@material-ui/core/TextField';
 import Paper from '@material-ui/core/Paper';
 import {
-  addOption, fetchPoll, removeOption, vote, addComment, deleteComment, inviteToPoll, removeFromPoll, editComment,
+  addOption,
+  fetchPoll,
+  removeOption,
+  vote,
+  addComment,
+  deleteComment,
+  inviteToPoll,
+  removeFromPoll,
+  editComment,
+  closePoll,
 } from '../actions/poll_actions';
 import { justEnglishDigits, toEnglishDigits, toPersianDigits } from '../helpers/lang_helper';
 import getPermission from '../selectors/Permission';
@@ -143,6 +152,10 @@ class ViewPoll extends Component {
     this.props.removeFromPoll(this.state.emailRemove, this.props.curr.id, this.state.userID);
   };
 
+  handleClosePoll = () => {
+    this.props.closePoll(this.props.curr.id, () => this.props.fetchPoll(this.props.curr.id));
+  };
+
   render() {
     if (!this.props.curr) {
       return <p>در حال بارگذاری...</p>;
@@ -155,7 +168,12 @@ class ViewPoll extends Component {
         padding: 10,
       }}
       >
-        <h3>{this.props.curr.title}</h3>
+        <h3>
+          {this.props.curr.title}
+          <span style={{ marginRight: 15 }}>
+            <Button color={'secondary'} onClick={this.handleClosePoll}>بستن نظرسنجی</Button>
+          </span>
+        </h3>
         <Typography component="p">
           گزینه‌ها:
         </Typography>
@@ -266,6 +284,7 @@ const mapDispatchToProps = {
   inviteToPoll,
   removeFromPoll,
   editComment,
+  closePoll,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(ViewPoll);
