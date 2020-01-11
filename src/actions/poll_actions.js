@@ -95,10 +95,10 @@ export function removeOption(pollId, userId, optionId, cb) {
   };
 }
 
-export function vote(optionId, pollId, userId) {
+export function vote(data, pollId, userId) {
   return (dispatch) => {
     axios.post(`${url}/vote`,
-      { optionId, pollId, userId })
+      { ...data, pollId, userId })
       .then((res) => {
         dispatch(fetchPoll(pollId));
         toast.success('رأی با موفقیت ثبت شد');

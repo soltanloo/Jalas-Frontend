@@ -73,6 +73,69 @@ class ViewPoll extends Component {
     this.setState({ userId: justEnglishDigits(toEnglishDigits(event.target.value)) });
   };
 
+  fetchCurrentVote = (option) => {
+    if (option.userList.some((id) => id === parseInt(this.props.userId))) {
+      return 'موافق';
+    } if (option.userAgreeIfNeeded.some((id) => id === parseInt(this.props.userId))) {
+      return 'موافق در صورت نیاز';
+    }
+    return 'مخالف';
+  };
+
+  handleSubmitAgreeVote = (option) => {
+    const votes = [];
+    this.props.curr.options.forEach(option => {
+      if (option.userList.some((id) => id === parseInt(this.props.userId))) votes.push(option.id);
+    });
+    const agreeIfNeeded = [];
+    this.props.curr.options.forEach(option => {
+      if (option.userAgreeIfNeeded.some((id) => id === parseInt(this.props.userId))) agreeIfNeeded.push(option.id);
+    });
+    votes.push(option.id);
+    const index = agreeIfNeeded.indexOf(option.id);
+    if (index > -1) {
+      agreeIfNeeded.splice(index, 1);
+    }
+    this.props.vote({ agreeIfNeeded: agreeIfNeeded, votes: votes }, this.props.curr.id, this.props.userId);
+  };
+
+  handleSubmitAgreeIfNeededVote = (option) => {
+    const votes = [];
+    this.props.curr.options.forEach(option => {
+      if (option.userList.some((id) => id === parseInt(this.props.userId))) votes.push(option.id);
+    });
+    const agreeIfNeeded = [];
+    this.props.curr.options.forEach(option => {
+      if (option.userAgreeIfNeeded.some((id) => id === parseInt(this.props.userId))) agreeIfNeeded.push(option.id);
+    });
+    agreeIfNeeded.push(option.id);
+    const index = votes.indexOf(option.id);
+    if (index > -1) {
+      votes.splice(index, 1);
+    }
+    this.props.vote({ agreeIfNeeded: agreeIfNeeded, votes: votes }, this.props.curr.id, this.props.userId);
+  };
+
+  handleDeleteVote = (option) => {
+    const votes = [];
+    this.props.curr.options.forEach(option => {
+      if (option.userList.some((id) => id === parseInt(this.props.userId))) votes.push(option.id);
+    });
+    const agreeIfNeeded = [];
+    this.props.curr.options.forEach(option => {
+      if (option.userAgreeIfNeeded.some((id) => id === parseInt(this.props.userId))) agreeIfNeeded.push(option.id);
+    });
+    const votesIndex = votes.indexOf(option.id);
+    if (votesIndex > -1) {
+      votes.splice(votesIndex, 1);
+    }
+    const agreeIfNeededIndex = agreeIfNeeded.indexOf(option.id);
+    if (agreeIfNeededIndex > -1) {
+      agreeIfNeeded.splice(agreeIfNeededIndex, 1);
+    }
+    this.props.vote({ agreeIfNeeded: agreeIfNeeded, votes: votes }, this.props.curr.id, this.props.userId);
+  };
+
   renderOptions = () => this.props.curr.options.map((option) => (
     <Card
       key={`option-${option.id}`}
@@ -92,18 +155,47 @@ class ViewPoll extends Component {
           {' '}
           {toPersianDigits(jMoment(option.finishTime, 'YYYY-MM-DDTHH:mm:ss').format('jYYYY/jM/jD HH:mm'))}
         </Typography>
+        <Typography>
+          رأی فعلی:
+          {' '}
+          {this.fetchCurrentVote(option)}
+        </Typography>
       </CardContent>
       <CardActions>
         {!option.userList.some((id) => id === parseInt(this.props.userId))
           && (
           <Button
-            disabled={option.userList.some((userId) => parseInt(userId) === parseInt(this.state.userId))}
-            onClick={() => this.props.vote(option.id, this.props.curr.id, this.state.userId)}
+            onClick={() => this.handleSubmitAgreeVote(option)}
             size="small"
+            style={{
+              color: 'rgb(56, 218, 38)',
+            }}
           >
-            ثبت رأی
+            ثبت رأی موافق
           </Button>
           )}
+        {!option.userAgreeIfNeeded.some((id) => id === parseInt(this.props.userId))
+        && (
+          <Button
+            onClick={() => this.handleSubmitAgreeIfNeededVote(option)}
+            size="small"
+            style={{
+              color: 'rgb(171, 162, 49)',
+            }}
+          >
+            ثبت رأی موافق در صورت نیاز
+          </Button>
+        )}
+        {(option.userList.some((id) => id === parseInt(this.props.userId)) || option.userAgreeIfNeeded.some((id) => id === parseInt(this.props.userId)))
+        && (
+          <Button
+            onClick={() => this.handleDeleteVote(option)}
+            size="small"
+            color={"secondary"}
+          >
+            ثبت رأی مخالف
+          </Button>
+        )}
         {this.props.permissions.isCurrentUser(this.props.curr.ownerId)
               && <Button color="secondary" onClick={() => this.handleRemoveOption(option.id)}>حذف</Button>}
       </CardActions>
@@ -144,12 +236,12 @@ class ViewPoll extends Component {
 
   addParticipant = () => {
     this.setState({ email: '' });
-    this.props.inviteToPoll(this.state.email, this.props.curr.id, this.state.userID);
+    this.props.inviteToPoll(this.state.email, this.props.curr.id, this.props.userID);
   };
 
   removeParticipant = () => {
     this.setState({ emailRemove: '' });
-    this.props.removeFromPoll(this.state.emailRemove, this.props.curr.id, this.state.userID);
+    this.props.removeFromPoll(this.state.emailRemove, this.props.curr.id, this.props.userID);
   };
 
   handleClosePoll = () => {
