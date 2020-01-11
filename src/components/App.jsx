@@ -25,6 +25,7 @@ import Header from './Header';
 import getPermission from '../selectors/Permission';
 import PerformancePanel from "./PerformancePanel";
 import AdminPanel from "./AdminPanel";
+import Settings from "./Settings";
 
 axios.defaults.baseURL = Config.baseURL;
 axios.defaults.headers.post['Content-Type'] = 'application/json; charset=utf-8';
@@ -85,6 +86,7 @@ class App extends React.Component {
           <PrivateRoute isLoggedIn={localStorage.authToken} path={'/poll/:id'} component={ViewPoll} />
           <PrivateRoute isLoggedIn={localStorage.authToken} path={'/performance'} component={PerformancePanel} />
           <PrivateRoute isLoggedIn={localStorage.authToken} path={'/metrics'} component={AdminPanel} />
+          <PrivateRoute isLoggedIn={localStorage.authToken} path={'/settings'} component={Settings} />
         </Switch>
       </Router>
     );
