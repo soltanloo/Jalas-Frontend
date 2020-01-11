@@ -2,6 +2,7 @@ const LOGIN_REQUEST = 'LOGIN_REQUEST';
 const LOGIN_FAILURE = 'LOGIN_FAILURE';
 const LOGIN_SUCCESS = 'LOGIN_SUCCESS';
 const REGISTER_FAILURE = 'REGISTER_FAILURE';
+const FETCH_USER = 'FETCH_USER';
 const LOGOUT = 'LOGOUT';
 
 const initialState = {
@@ -39,6 +40,11 @@ export default function (state = initialState, action = {}) {
         ...state,
         errorMessage: action.errorMessage,
       };
+    case FETCH_USER:
+      return {
+        ...state,
+        userDetails: action.userDetails,
+      }
     default:
       return state;
   }

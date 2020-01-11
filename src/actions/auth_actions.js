@@ -7,6 +7,7 @@ import Config from '../config/config';
 const LOGIN_REQUEST = 'LOGIN_REQUEST';
 const LOGIN_FAILURE = 'LOGIN_FAILURE';
 const LOGIN_SUCCESS = 'LOGIN_SUCCESS';
+const FETCH_USER = 'FETCH_USER';
 const LOGOUT = 'LOGOUT';
 
 export function login(credentials, callback) {
@@ -45,5 +46,17 @@ export function fetchUser(token) {
       userId: jwt_decode(localStorage.authToken).userId,
       userRole: jwt_decode(localStorage.authToken).role,
     });
+  };
+}
+
+export function fetchUserDetails(id) {
+  return (dispatch) => {
+    axios.get(`${Config.baseURL}/getProfile`)
+      .then((res) => {
+        dispatch({
+          type: FETCH_USER,
+          userDetails: res.data,
+        });
+      });
   };
 }
