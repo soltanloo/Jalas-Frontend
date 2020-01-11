@@ -42,6 +42,9 @@ class Header extends Component {
                     پنل مدیر محصول
                   </Button>
                 }
+                <Button component={Link} to="/settings" color="primary" style={{ margin: 5 }}>
+                  تنظیمات
+                </Button>
                 <Button component={Link} to="/" onClick={() => this.props.logout()} color="secondary" style={{ margin: '5' }}>
                   خروج
                 </Button>
